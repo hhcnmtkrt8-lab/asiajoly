@@ -59,6 +59,36 @@ BOX = {
 }
 
 
+def jsonld(obj):
+    return ('<script type="application/ld+json">' +
+            json.dumps(obj, ensure_ascii=False, separators=(",", ":")) + "</script>")
+
+
+def org_jsonld():
+    return jsonld({
+        "@context": "https://schema.org", "@type": "Organization",
+        "name": BRAND, "url": DOMAIN + "/",
+        "logo": DOMAIN + "/assets/favicon.svg",
+        "description": SITE["footer"]["tagline"],
+        "sameAs": [],
+    })
+
+
+def product_jsonld(p):
+    return jsonld({
+        "@context": "https://schema.org", "@type": "Product",
+        "name": p["name"], "description": p["desc"],
+        "image": DOMAIN + "/" + PHOTOS[p["id"]],
+        "brand": {"@type": "Brand", "name": BRAND},
+        "sku": p["id"], "category": p["category"],
+        "offers": {
+            "@type": "Offer", "price": p["price"], "priceCurrency": "USD",
+            "availability": "https://schema.org/InStock",
+            "url": f"{DOMAIN}/p-{p['id']}.html",
+        },
+    })
+
+
 def esc(s):
     return html.escape(str(s), quote=True)
 
@@ -83,6 +113,8 @@ def head(title, desc, canonical, extra=""):
 <meta property="og:type" content="website">
 <meta property="og:url" content="{DOMAIN}/{canonical}">
 <meta name="theme-color" content="#fdfbf7">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/favicon-180.png">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2314201f'/%3E%3Ctext x='16' y='22' font-family='Helvetica' font-size='13' fill='%23fdfbf7' text-anchor='middle' letter-spacing='1'%3EA%3C/text%3E%3C/svg%3E">
 <link rel="stylesheet" href="assets/styles.css">{extra}
 </head>
@@ -358,7 +390,8 @@ def build_home():
     </div>
   </div>
 </section>"""
-    return page(f"{BRAND} — {title}", h["hero"]["sub"], "index.html", body)
+    return (head(f"{BRAND} — {title}", h["hero"]["sub"], "index.html", org_jsonld())
+            + header("") + "<main>" + body + "</main>" + footer())
 
 
 def build_shop():
@@ -458,7 +491,8 @@ def build_product(p):
 <div class="buybar" id="buybar"><div class="p"><small>{esc(p['name'])}</small>
   <span id="bbPrice">{money(p['price'])}</span></div>
   <button class="btn btn--sm" data-add="{pid}"><span data-i18n="common.addToBag">Add to bag</span></button></div>"""
-    return page(f"{p['name']} — {BRAND}", p["desc"], f"p-{pid}.html", body, "shop")
+    return (head(f"{p['name']} — {BRAND}", p["desc"], f"p-{pid}.html", product_jsonld(p))
+            + header("shop") + "<main>" + body + "</main>" + footer())
 
 
 def build_about():
@@ -678,6 +712,26 @@ def main():
 
     for name, content in pages.items():
         (out / name).write_text(content, encoding="utf-8")
+
+    today = "2026-11-22"
+    urls = [("index.html", "1.0"), ("shop.html", "0.9")]
+    urls += [(f"p-{p['id']}.html", "0.8") for p in PRODUCTS]
+    urls += [("about.html", "0.6"), ("technology.html", "0.6"), ("journal.html", "0.6"),
+             ("journal-1.html", "0.5"), ("journal-2.html", "0.5"), ("journal-3.html", "0.5"),
+             ("faq.html", "0.6"), ("contact.html", "0.5"), ("wholesale.html", "0.4"),
+             ("shipping.html", "0.4"), ("returns.html", "0.4"), ("warranty.html", "0.4"),
+             ("privacy.html", "0.2"), ("terms.html", "0.2")]
+    sitemap = ['<?xml version="1.0" encoding="UTF-8"?>',
+               '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
+    for path, pri in urls:
+        loc = DOMAIN + "/" + ("" if path == "index.html" else path)
+        sitemap.append(f"  <url><loc>{loc}</loc><lastmod>{today}</lastmod>"
+                       f"<priority>{pri}</priority></url>")
+    sitemap.append("</urlset>")
+    (out / "sitemap.xml").write_text("\n".join(sitemap), encoding="utf-8")
+    (out / "robots.txt").write_text(
+        "User-agent: *\nAllow: /\n\nSitemap: " + DOMAIN + "/sitemap.xml\n", encoding="utf-8")
+    print(f"wrote sitemap.xml ({len(urls)} urls) and robots.txt")
     print(f"wrote {len(pages)} pages")
     for old in ("product.html", "products.html"):
         if (out / old).exists():
