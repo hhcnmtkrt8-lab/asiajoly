@@ -1,5 +1,6 @@
 .DS_Store
 .build/
-_shot_*.html
+_zh.html
+_test*.html
 _print*.html
 _probe.html

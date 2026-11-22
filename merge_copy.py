@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Merge the generated copy JSON into assets/copy.js (window.COPY).
+"""Merge generated copy into assets/copy.js (window.COPY).
 
-Validates structure, fills gaps from the other language, and fails loudly if a key
-is missing so the page never renders a blank headline.
+Sources: .build/site.json, .build/journal.json, .build/legal.json
+Validates structure and fills any gap from the other language.
 
 Run: python3 merge_copy.py
 """
@@ -13,129 +13,119 @@ import sys
 HERE = pathlib.Path(__file__).resolve().parent
 BUILD, ASSETS = HERE / ".build", HERE / "assets"
 
-REQUIRED_HOME = {
-    "nav": ["shop", "technology", "manifesto", "ritual", "faq", "cart", "menu"],
-    "hero": ["eyebrow", "title", "sub", "cta", "cta2", "scroll", "note"],
-    "marquee": None,
-    "manifesto": ["eyebrow", "title", "p1", "p2", "p3", "signature"],
-    "collection": ["eyebrow", "title", "sub", "items"],
-    "tech": ["eyebrow", "title", "sub", "stats"],
-    "anatomy": ["eyebrow", "title", "sub", "hotspots"],
-    "ritual": ["eyebrow", "title", "sub", "steps"],
-    "compare": ["eyebrow", "title", "sub", "head", "rows"],
-    "proof": ["eyebrow", "title", "sub", "quotes", "disclaimer"],
-    "subscribe": ["eyebrow", "title", "sub", "price", "period", "points", "cta", "note"],
-    "faq": ["eyebrow", "title", "items"],
-    "newsletter": ["eyebrow", "title", "sub", "placeholder", "cta", "note"],
+REQUIRED = {
+    "nav": ["shop", "about", "journal", "faq", "cart", "menu"],
+    "common": ["addToBag", "view", "new", "best", "soldOut", "freeShip", "shopAll", "readMore"],
+    "home": ["hero", "ticker", "intro", "lines", "featured", "why", "journal", "reviews", "newsletter"],
+    "shop": ["title", "sub", "filters", "sort", "sortOptions", "empty", "clear"],
+    "about": ["title", "sub", "sections", "values"],
+    "technology": ["title", "sub", "sections", "stats"],
+    "faq": ["title", "items"],
+    "contact": ["title", "form", "channels"],
+    "notFound": ["title", "sub", "cta"],
     "footer": ["tagline", "cols", "legal", "disclaimer"],
 }
-REQUIRED_PDP = ["breadcrumb", "eyebrow", "title", "subtitle", "price", "rating", "ratingCount",
-                "desc", "variantLabel", "variants", "qtyLabel", "cta", "ctaNote", "stock",
-                "shipping", "features", "specs", "box", "care", "faq", "related"]
-# extra UI strings the templates need but the copywriter was not asked for
+
 UI_EXTRAS = {
     "en": {
-        "cart": {"title": "Bag"},
-        "hero": {"caption": "brushed 316"},
-        "pdp": {"relatedLabel": "Also in the collection", "relatedTitle": "Kept, together",
-                "acc": {"specs": "Specifications", "box": "In the box",
-                        "care": "Care", "faq": "Questions"},
-                "buyNote": "Preview build · no payment is taken"},
+        "cart": {"title": "Your bag", "empty": "Your bag is empty.",
+                 "checkout": "Checkout", "subtotal": "Subtotal", "shipping": "Shipping",
+                 "total": "Total", "free": "Free", "note": "Preview build · no payment is taken",
+                 "away": "away from free shipping", "unlocked": "Free shipping unlocked",
+                 "remove": "Remove", "qty": "Quantity"},
+        "pdp": {"specs": "Specifications", "box": "In the box", "care": "Care",
+                "questions": "Questions", "related": "Also in the collection",
+                "relatedTitle": "Good together", "inStock": "In stock · ships in 2–4 days",
+                "color": "Color", "select": "Select a color"},
+        "shop": {"all": "All products", "line": "Line", "products": "products"},
+        "misc": {"backTo": "Back to", "onThisPage": "On this page"},
+        "nav": {"technology": "Technology"},
+        "cat": {"fountains": "Fountains", "feeders": "Feeders", "bowls": "Bowls & Mats", "play": "Play", "care": "Care"},
     },
     "zh": {
-        "cart": {"title": "购物袋"},
-        "hero": {"caption": "拉丝 316"},
-        "pdp": {"relatedLabel": "系列中的其他物件", "relatedTitle": "一起留着",
-                "acc": {"specs": "规格参数", "box": "包装内含",
-                        "care": "养护", "faq": "常见问题"},
-                "buyNote": "演示站 · 不产生实际交易"},
+        "cart": {"title": "购物袋", "empty": "购物袋是空的。",
+                 "checkout": "去结算", "subtotal": "小计", "shipping": "运费",
+                 "total": "合计", "free": "免费", "note": "演示站 · 不产生实际交易",
+                 "away": "即可免运费", "unlocked": "已享免运费",
+                 "remove": "移除", "qty": "数量"},
+        "pdp": {"specs": "规格参数", "box": "包装内含", "care": "养护",
+                "questions": "常见问题", "related": "同系列",
+                "relatedTitle": "搭配更好", "inStock": "现货 · 2–4 个工作日发出",
+                "color": "颜色", "select": "选择颜色"},
+        "shop": {"all": "全部产品", "line": "系列", "products": "件产品"},
+        "misc": {"backTo": "返回", "onThisPage": "本页目录"},
+        "nav": {"technology": "技术"},
+        "cat": {"fountains": "饮水机", "feeders": "喂食器", "bowls": "碗与垫", "play": "玩具", "care": "耗材"},
     },
 }
 
 
 def load(name):
     p = BUILD / f"{name}.json"
-    if not p.exists():
-        return None
-    return json.loads(p.read_text(encoding="utf-8"))
+    return json.loads(p.read_text(encoding="utf-8")) if p.exists() else None
 
 
-def check(lang, data, problems):
-    for key, sub in REQUIRED_HOME.items():
-        if key not in data:
-            problems.append(f"{lang}: missing section '{key}'")
-            continue
-        if sub is None:
-            continue
-        val = data[key]
-        if not isinstance(val, dict):
-            problems.append(f"{lang}.{key}: not an object")
-            continue
-        for s in sub:
-            if s not in val:
-                problems.append(f"{lang}.{key}: missing '{s}'")
-    for key, n in (("marquee", 4), ("collection.items", 3), ("tech.stats", 4),
-                   ("anatomy.hotspots", 5), ("ritual.steps", 3), ("proof.quotes", 3),
-                   ("compare.rows", 6), ("subscribe.points", 3), ("faq.items", 7)):
-        node = data
-        for part in key.split("."):
-            node = node.get(part) if isinstance(node, dict) else None
-        if not isinstance(node, list):
-            problems.append(f"{lang}.{key}: not a list")
-        elif len(node) < n:
-            problems.append(f"{lang}.{key}: {len(node)} items, expected {n}")
+def deep_merge(base, extra):
+    for k, v in extra.items():
+        if isinstance(v, dict) and isinstance(base.get(k), dict):
+            deep_merge(base[k], v)
+        else:
+            base[k] = v
+    return base
 
 
 def main():
-    home = load("home")
-    pdp = load("pdp")
+    site, journal, legal = load("site"), load("journal"), load("legal")
+    if not site:
+        sys.exit("site.json missing")
     problems = []
-
-    if not home:
-        sys.exit("home.json missing — cannot build copy.js")
     for lang in ("en", "zh"):
-        check(lang, home.get(lang, {}), problems)
-        if not pdp or "pdp" not in pdp.get(lang, {}):
-            problems.append(f"{lang}: pdp block missing")
+        block = site.get(lang, {})
+        for key, subs in REQUIRED.items():
+            if key not in block:
+                problems.append(f"{lang}: missing '{key}'")
+                continue
+            for s in subs:
+                if s not in block[key]:
+                    problems.append(f"{lang}.{key}: missing '{s}'")
+        if journal and len(journal.get(lang, {}).get("articles", [])) < 3:
+            problems.append(f"{lang}: fewer than 3 articles")
+        if legal:
+            for page in ("shipping", "returns", "warranty", "privacy", "terms", "wholesale"):
+                if page not in legal.get(lang, {}):
+                    problems.append(f"{lang}: missing legal page '{page}'")
 
     if problems:
-        print("STRUCTURAL PROBLEMS:")
+        print("STRUCTURE:")
         for p in problems:
             print("  -", p)
-        print("\nProceeding with fallback fill; review the output before shipping.")
-    else:
-        print("structure OK")
-
-    def deep_merge(base, extra):
-        for k, v in extra.items():
-            if isinstance(v, dict) and isinstance(base.get(k), dict):
-                deep_merge(base[k], v)
-            else:
-                base[k] = v
-        return base
 
     out = {}
     for lang in ("en", "zh"):
-        block = dict(home.get(lang, {}))
-        if pdp and lang in pdp and "pdp" in pdp[lang]:
-            block["pdp"] = pdp[lang]["pdp"]
+        block = dict(site.get(lang, {}))
+        if journal:
+            j = journal.get(lang, {})
+            block["journalPage"] = j.get("index", {})
+            block["articles"] = j.get("articles", [])
+        if legal:
+            for page in ("shipping", "returns", "warranty", "privacy", "terms", "wholesale"):
+                if page in legal.get(lang, {}):
+                    block[page] = legal[lang][page]
         deep_merge(block, UI_EXTRAS[lang])
         out[lang] = block
 
-    # fill any missing top-level key from the other language so nothing renders blank
     for lang, other in (("en", "zh"), ("zh", "en")):
         for k, v in out[other].items():
             out[lang].setdefault(k, v)
 
-    js = "/* Generated by merge_copy.py — edit copy.json sources, not this file. */\n"
+    js = "/* Generated by merge_copy.py — edit the copy spec, not this file. */\n"
     js += "window.COPY = " + json.dumps(out, ensure_ascii=False, indent=1) + ";\n"
     (ASSETS / "copy.js").write_text(js, encoding="utf-8")
 
-    words_en = len(json.dumps(out["en"], ensure_ascii=False).split())
-    chars_zh = len("".join(str(v) for v in out["zh"].values()))
-    print(f"wrote assets/copy.js — en {words_en} words, zh ~{chars_zh} chars")
-    head = out["en"]["hero"]["title"]
-    print("hero:", " / ".join(head))
+    n_art = len(out["en"].get("articles", []))
+    print(f"wrote assets/copy.js — articles {n_art}, faq {len(out['en'].get('faq', {}).get('items', []))}, "
+          f"legal pages {sum(1 for k in ('shipping','returns','warranty','privacy','terms','wholesale') if k in out['en'])}")
+    print("hero:", " / ".join(out["en"]["home"]["hero"]["title"]))
 
 
 if __name__ == "__main__":

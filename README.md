@@ -1,120 +1,135 @@
-# RILL — Water, considered.
+# Asiajoly — asiajoly.com
 
-A high-end, editorial DTC storefront for a pet-hydration brand, built as static HTML/CSS/JS with
-no build step, no frameworks and no external requests. Bilingual (EN / 中文), with a working bag,
-finish switcher, subscription entry point and a product page.
+A bright, editorial storefront for a design-led pet brand: 30 static pages, 13 products across four
+lines, bilingual (EN / 中文), no build step, no frameworks, no external requests.
 
-**Live:** https://hhcnmtkrt8-lab.github.io/rill-pet-site/
+**Live:** https://hhcnmtkrt8-lab.github.io/asiajoly/
+**Repository:** https://github.com/hhcnmtkrt8-lab/asiajoly
 
 ---
 
-## What this is
-
-A production-shaped front end for the brand strategy in
-[`pet-ecommerce-research`](../pet-ecommerce-research): a narrow, premium hard-goods catalogue
-(one fountain, one connected fountain, one bowl, consumables) sold direct-first, positioned against
-the $30 plastic fountain rather than competing with it.
-
-The design intent is "equipment, not gadget": near-black stages, ivory paper sections, one glacial
-accent, tight display type, and product art drawn as SVG so it stays sharp at any size and costs
-nothing to load.
+## What's here
 
 | | |
 |---|---|
-| Pages | `index.html` (home), `product.html` (RILL 01 PDP) |
-| Weight | ~25 KB HTML, ~22 KB CSS, ~18 KB JS, ~8 KB SVG art — no images, no fonts, no CDN |
-| JavaScript | vanilla, ~380 lines, no dependencies |
-| Language | EN / 中文 toggle, persisted in `localStorage` |
-| Bag | drawer, quantity, subtotal, free-shipping threshold, `localStorage` persistence |
-| Motion | scroll reveals, counters, marquee, parallax hero, canvas caustics; all disabled under `prefers-reduced-motion` |
+| Pages | **30** — home, shop, 13 product pages, about, technology, journal index + 3 articles, FAQ, contact, wholesale, 5 policy pages, 404 |
+| Products | **13 SKUs** in four lines — Spring (fountains), Feast (feeders), Still (bowls & mats), Play (toys) — plus Care (filters, pumps) |
+| Language | English server-rendered; Chinese switches instantly at runtime from `assets/copy.js` |
+| Weight | ~70 KB HTML per page, 24 KB CSS, 26 KB JS, product art as SVG (no photography, no CDN, no web fonts) |
+| Commerce | Client-side bag with localStorage, quantity, free-shipping threshold. No payment integration |
+| Motion | Scroll reveals, marquee, hover states — all disabled under `prefers-reduced-motion` |
 
-## Run it
+### Page map
 
-```bash
-open index.html          # macOS
-python3 -m http.server   # or serve the folder at http://localhost:8000
+```
+index.html               home
+shop.html                catalogue with category filter + sort
+p-<id>.html              13 product pages (p-spring-01.html … p-pump.html)
+about.html               brand story, values
+technology.html          materials, noise, teardown, the four numbers
+journal.html             article index
+journal-1..3.html        "Why cats prefer running water", "The case against plastic bowls",
+                         "A small-apartment setup"
+faq.html                 12 questions
+contact.html             support, wholesale, returns contacts
+wholesale.html           trade application
+shipping / returns / warranty / privacy / terms .html
+404.html
 ```
 
-No installation step. Everything works from `file://` except that a local server is required if you
-later add fetch-based features.
+## Deploying with Hostinger
+
+The repository is the deployable artifact — every HTML file is committed and there is nothing to
+build on the server.
+
+1. Hostinger → **Website → Connect Git repository** (or upload the repo contents to `public_html`).
+2. Branch: `main`. **Build command: none.** **Output directory: `/`** (the repo root is the site).
+3. Point `asiajoly.com` at the Hostinger site and enable free SSL.
+4. Canonical URLs in every page already point at `https://asiajoly.com/…`.
+
+If you prefer GitHub Pages instead, it is already enabled on this repo.
+
+## Local preview
+
+```bash
+python3 -m http.server 8000     # then open http://localhost:8000
+```
+Opening `index.html` directly from disk also works.
+
+## Regenerating the site
+
+All copy and art are generated. The pipeline is committed so the site can be rebuilt or extended.
+
+```bash
+python3 build_art.py        # 13 products × 3 views of SVG art → assets/products/
+python3 build_products.py   # .build/products.json → assets/products.js
+python3 merge_copy.py       # .build/{site,journal,legal}.json → assets/copy.js
+python3 build_site.py       # renders all 30 pages into the repo root
+```
+
+Copy is written by Claude (`claude-opus-4-5`) against the briefs in `copy/`:
+
+```bash
+cat copy/brief.md copy/spec-site.md     | claude -p --model claude-opus-4-5 > .build/site.raw
+cat copy/brief.md copy/spec-products.md | claude -p --model claude-opus-4-5 > .build/products.raw
+cat copy/brief.md copy/spec-journal.md  | claude -p --model claude-opus-4-5 > .build/journal.raw
+cat copy/brief.md copy/spec-legal.md    | claude -p --model claude-opus-4-5 > .build/legal.raw
+# strip fences, save as .build/*.json, then run the three build steps above
+```
+
+`copy/brief.md` locks the brand register and — importantly — the hard rules: no invented
+certifications, awards, press, review counts, no health claims, no fake urgency, honest toy
+durability, real product facts only.
 
 ## Structure
 
 ```
-rill-pet-site/
-├── index.html              home
-├── product.html            product detail page
+asiajoly-site/
+├── *.html                     30 generated pages (committed — this is the deployable site)
 ├── assets/
-│   ├── styles.css          design system + layout
-│   ├── app.js              i18n, rendering, bag, motion
-│   ├── copy.js             GENERATED — all site copy, EN + ZH
-│   ├── fountain-steel.svg  product art (also graphite, sand, pro)
-│   ├── bowl-sand.svg
-│   └── filter.svg
-├── copy/
-│   ├── brief.md            brand + copy brief given to the model
-│   ├── spec-home.md        JSON schema for the homepage copy
-│   └── spec-pdp.md         JSON schema for the product page copy
-├── build_art.py            regenerates the SVG product art
-├── merge_copy.py           validates + merges generated copy into assets/copy.js
-└── .build/                 raw model output (git-ignored)
+│   ├── styles.css             bright design system
+│   ├── app.js                 i18n, catalogue rendering, filters, bag, PDP
+│   ├── copy.js                GENERATED — all copy, EN + ZH
+│   ├── products.js            GENERATED — the 13-product catalogue
+│   └── products/*.svg         39 files: 13 products × 3 views
+├── data/products.json         catalogue source
+├── copy/                      brand brief + three copy specs
+├── build_art.py               SVG product art
+├── build_products.py          catalogue normaliser
+├── merge_copy.py              copy validator + merger
+├── build_site.py              page renderer
+└── push_via_api.py            push helper for networks where git over 443 is blocked
 ```
 
-## How the copy was produced
+## Design notes
 
-Every word of on-site copy was written by Claude (`claude-opus-4-5`, via the local Claude Code CLI)
-against `copy/brief.md`, which locks the brand register, the product facts and a set of hard rules —
-no invented certifications, no invented press, no health claims, no fake review counts.
-
-The model returns strict JSON; `merge_copy.py` validates the structure (array lengths, required keys),
-fills any gap from the other language, and writes `assets/copy.js`. The renderer never shows a blank
-headline because a key was missing.
-
-To regenerate:
-
-```bash
-python3 - <<'EOF'
-# same pipeline used to build this repo
-EOF
-# or simply re-run after editing copy specs:
-cat copy/brief.md copy/spec-home.md | claude -p --model claude-opus-4-5 > .build/home.raw
-cat copy/brief.md copy/spec-pdp.md  | claude -p --model claude-opus-4-5 > .build/pdp.raw
-# parse raw -> .build/*.json, then:
-python3 merge_copy.py
-python3 build_art.py
-```
+- **Palette:** warm paper `#FDFBF7`, ink `#14201F`, teal `#12736B`, coral `#E8734A`; tinted panels
+  (mint, sand, sky, blush) alternate to give the long page a rhythm without using photography.
+- **Type:** system sans for UI, a serif for pull-quotes and review text, monospace for labels and
+  prices. No webfonts, so first paint is immediate.
+- **Product art** is drawn, not photographed: each line has its own silhouette (vessel, box, bowl,
+  soft object) and every colour is derived from one hex per product, so adding a finish is a one-line
+  change in `build_art.py`.
+- **Chinese** is a parallel original, not a translation, with its own leading and letter-spacing.
 
 ## Before this goes live
 
-This is a **preview build**. It is honest about that in the footer, but these are the real gates:
+This is a **preview build** and says so in the footer. Real gates:
 
-1. **Brand clearance.** "RILL" is a working name. Search USPTO / EUIPO / UKIPO for conflicts in
-   class 21 (household/containers) and 11 (water apparatus) before printing anything.
-2. **Product claims.** 2.8 L, 24 dB, 30-second teardown, 316 stainless, 1.8 m cable, 30-day filter,
-   18-month pump, $129/$169/$49/$19 are design targets. Every one must be re-measured on the
-   production unit and backed by a test report before the copy ships.
-3. **Certification language.** The site says "designed to UL/CE requirements, with testing in progress"
-   and must keep saying that until the certificates exist. Do not add CE/UL marks to the footer.
-4. **Reviews.** The three "field notes" are pre-launch test-reader quotes and are labelled as such.
-   Replace with verified purchase reviews (Judge.me / Okendo) before launch; do not invent counts.
-5. **Legal pages.** Shipping, returns, warranty, privacy, terms and EU/UK consumer-rights pages are
-   linked but not written. The EU 14-day withdrawal right and the 2-year legal guarantee need
-   jurisdiction-specific wording.
-6. **Commerce.** The bag is client-side only. Wire it to Shopify Storefront / Stripe / Snipcart and
-   add server-side price validation — never trust the price in `localStorage`.
-7. **Compliance surface.** GPSR requires an EU Responsible Person named on the listing and the
-   packaging; WEEE, battery and packaging EPR registrations are per-country. The footer disclaimer is
-   not a substitute for those registrations.
-
-## Notes on the code
-
-- `assets/copy.js` is generated. Edit `copy/*.md` or the JSON in `.build/`, then re-run `merge_copy.py`.
-- Product art is pure SVG with internal CSS animations, so it works inside `<img>` with no JS.
-- `build_art.py` parameterises the finishes; changing a hex there regenerates every product view.
-- The bag price lives in `PRODUCTS` in `app.js`. That is fine for a preview and unacceptable in
-  production.
-- Reduced-motion users get the final state immediately; no content depends on an animation completing.
+1. **Trademark.** Search "Asiajoly" in USPTO / EUIPO / UKIPO (classes 21, 11) before printing.
+2. **Specs.** 2.8 L, 24 dB, 30-second teardown, 316 stainless, 24 dB, 72-hour backup, capacities and
+   prices are design targets. Re-measure on production units; each needs a test report behind it.
+3. **Certification language.** The site says "designed to UL/CE requirements, testing in progress".
+   Keep it that way until certificates exist; do not add CE/UL marks to the footer.
+4. **Reviews.** The three "first homes" quotes are pre-launch test notes and are labelled as such.
+5. **Policies.** Shipping / returns / warranty / privacy / terms are written in plain language and use
+   `[registered address]` placeholders. Have a lawyer review before launch, especially EU/UK
+   withdrawal rights and the 2-year guarantee.
+6. **Commerce.** The bag is client-side only; prices live in `assets/products.js`. Wire to Shopify /
+   Stripe / Snipcart and validate every price server-side.
+7. **Compliance surface.** GPSR Responsible Person, WEEE, battery and packaging EPR registrations are
+   per-country obligations — a footer disclaimer is not a substitute.
 
 ## License
 
-Design and code: MIT. Copy: © 2026 RILL (placeholder brand).
+Code and design: MIT. Copy and brand: © 2026 Asiajoly (placeholder brand).

@@ -1,61 +1,63 @@
-# RILL — Brand & Copy Brief (for copywriter)
+# Asiajoly — Brand & Copy Brief
 
-You are writing the launch copy for a **premium pet-hydration brand**. Not a marketplace listing:
-an editorial, design-led DTC site in the register of Aesop, Teenage Engineering, Nothing, and
-Litter-Robot's premium tier. Restrained, specific, confident. No exclamation marks. No "fur babies".
-No "in today's world". No emoji. Never more than one adjective where one noun will do.
+You are writing the site copy for **Asiajoly** (asiajoly.com), a bright, design-led pet brand.
 
-## The brand
+## What the brand is
 
-- **Name:** RILL (a rill is a small, clear stream). Wordmark set in caps, letterspaced.
-- **What it sells:** one object, done properly — a stainless-steel pet water fountain. Then a bowl,
-  then a feeder. A narrow catalogue by design.
-- **Positioning:** the fountain is not a gadget, it is a piece of kitchen equipment. The category is
-  full of $30 plastic pumps that grow biofilm and die in a year; RILL is the considered alternative.
-- **Audience:** 30–50, urban, design-literate, multi-pet or single-cat households, already spend on
-  good coffee machines and good knives. They will pay $129 for something that looks right on a floor.
-- **Markets:** United States first, then UK/DE/FR. Copy must read naturally to a US reader and not
-  sound translated; Chinese is a parallel original, not a translation.
-- **Price architecture:** Fountain $129, Fountain PRO (app + battery) $169, Bowl $49, Filter
-  subscription $19/quarter.
+- **Name:** Asiajoly. Wordmark set as `ASIAJOLY` in the header. The name is a working brand: "Asia"
+  + "jolly". Do not explain the etymology on the site; do not use the phrase "joy of Asia".
+- **What it sells:** objects for cats and dogs — water fountains, feeders, bowls, mats, toys,
+  consumables. Four lines: **Spring** (fountains), **Feast** (feeders), **Still** (bowls, mats),
+  **Play** (toys). Plus **Care** (filters, pumps).
+- **Positioning:** considered design at a fair premium. Not a luxury-object brand, not a $20 Amazon
+  gadget brand. The opposite of clinical pet-tech and the opposite of cartoonish pet toys.
+- **Audience:** 28–45, urban, rent, one or two cats or a small dog, buys good coffee and good
+  kitchen tools, cares how things look in a small apartment, dislikes pet products that look like
+  medical equipment.
+- **Tone:** warm, plain-spoken, quietly confident. Short sentences. Concrete detail over adjectives.
+  A little wit, never cute. No exclamation marks, no emoji, no "fur babies", no "paw-some".
 
-## The product truths to build copy on (use these, do not invent new specs)
+## Visual world (so the words fit)
 
-1. **316 stainless steel** water-contact surfaces — not plastic, not 304. Biofilm has nowhere to grip.
-2. **24 dB** at one metre — quieter than a library, quieter than a fridge. The pump is decoupled from
-   the housing so vibration does not reach the floor.
-3. **30-second teardown** — no tools, five parts, all of them dishwasher-safe. This is the single
-   biggest complaint about every other fountain on the market and the reason people stop using them.
-4. **2.8 L** reservoir, sized for two cats for four days, or one large dog for two.
-5. **Visible water line** — a machined slot in the housing so you can see the level without lifting
-   the lid.
-6. **Filter + pump are consumables you can buy forever** — $19/quarter filter, $18 pump, both
-   replaceable in under a minute. The object is designed to be kept, not replaced.
-7. **Cable** is braided, 1.8 m, with a strain relief that survives a cat chewing it.
-8. **PRO adds:** app with intake tracking, low-water alert, battery backup for 72 hours.
+Warm off-white paper (#FDFBF7), deep green-ink text (#14201F), a teal accent (#12736B) and a warm
+coral secondary (#E8734A). Big generous type, lots of air, product photography replaced by clean
+illustrated objects on soft tinted panels. Bright, calm, optimistic — not dark, not neon.
+
+## Product facts — use these, invent nothing else
+
+Fountains: 316 stainless or glazed ceramic water contact, 24 dB at one metre, five parts,
+30-second teardown with no tools, all parts dishwasher-safe, 2.8 L (Spring 01) / 2.0 L (Spring 02) /
+1.2 L (Spring Mini), 1.8 m braided cable, 30-day filter, 18-month pump, pump and filter replaceable.
+Spring 01 Pro adds an app (intake tracking, low-water alert) and a 72-hour battery backup.
+
+Feeders: 4 L hopper (Feast 01), 2.5 L (Feast Mini), 6 L with 1080p camera and two-way audio
+(Feast 01 Pro); stainless bowl insert; portion sizes 8–12 g; Wi-Fi 2.4 GHz; battery backup;
+desiccant compartment; twist-lock lid.
+
+Bowls and mats: glazed stoneware or 316 stainless, non-slip silicone foot, 400 ml (Still Bowl);
+food-grade silicone mat with raised lip, dishwasher-safe (Still Mat).
+
+Toys: snuffle mat (machine washable), treat ball (TPE, treat-dispensing), both designed to be
+washed and to survive a chewer for a season — not indestructible, and say so.
+
+Care: filter 3-pack $19, replacement pump $18.
+
+Prices: Spring 01 $129 · Spring 01 Pro $169 · Spring 02 $99 · Spring Mini $79 · Feast 01 $149 ·
+Feast 01 Pro $229 · Feast Mini $89 · Still Bowl $45 · Still Mat $29 · Play Snuffle $39 ·
+Play Ball $24 · Filter 3-pack $19 · Pump $18.
 
 ## Hard rules
 
-- **No invented certifications.** Do not claim CE, FCC, UL, FDA or "vet approved". You may say
-  "designed to UL/CE requirements" or refer to testing in progress, once, in the footer/spec area.
-- **No invented reviews or press.** If you write a testimonial, it must be clearly a field-test quote
-  attributed to a first name and city only, with no publication name.
-- **No health claims.** "Cats drink more from running water" is acceptable as a behavioural
-  observation; "prevents kidney disease" is not.
-- **No sustainability theatre.** Recycled packaging and replaceable parts are fine to mention; do not
-  call anything "carbon neutral".
-- Numbers must be the ones above. You may reuse 2.8 L, 24 dB, 30 seconds, 316, 72 hours, $19, $129,
-  $169, $49.
-
-## Voice tests
-
-- Good: "Five parts. No tools. Thirty seconds."
-- Good: "Most fountains are sold as gadgets. This one is equipment."
-- Bad: "Give your furry friend the hydration they deserve!"
-- Bad: "Revolutionary patented technology that will transform your pet's life."
+1. **No invented certifications, awards, press or review counts.** No "vet approved", no "FDA".
+   You may refer to compliance work in progress, once, in a legal or footer context.
+2. **No health claims.** "Cats often drink more from moving water" is fine. "Prevents kidney
+   disease" is not.
+3. **No fake urgency.** No countdowns, no "only 3 left", no invented scarcity.
+4. **Toy durability must be honest:** designed to survive normal play and be washed, not indestructible.
+5. British/American spelling: use American English on the site (color, favorite, liters).
+6. Chinese must be a native rewrite for a design-literate reader — 简洁、克制、有画面感，不要翻译腔。
 
 ## Output
 
-Return **only** a single JSON object, no markdown fences, no commentary. Keys exactly as specified.
-Chinese values must be native-quality Chinese written for a design-literate reader, not a translation
-of the English. Keep both languages the same length within ±20%.
+Return **only** a single JSON object — no markdown fences, no commentary, no preamble. Keys exactly
+as specified in each task file. Both `en` and `zh` must be present and identical in structure.

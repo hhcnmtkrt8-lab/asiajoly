@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="120 440 300 300" width="620" height="760" role="img" aria-label="Asiajoly ceramic fountain"><defs>
+  <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#fcfaf8"/>
+    <stop offset=".22" stop-color="#fcfaf8"/>
+    <stop offset=".55" stop-color="#efe7da"/>
+    <stop offset=".82" stop-color="#deccae"/>
+    <stop offset="1" stop-color="#c8a772"/>
+  </linearGradient>
+  <linearGradient id="v" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#c8a772" stop-opacity=".55"/>
+    <stop offset=".22" stop-color="#fcfaf8" stop-opacity=".55"/>
+    <stop offset=".55" stop-color="#fcfaf8" stop-opacity=".05"/>
+    <stop offset="1" stop-color="#c8a772" stop-opacity=".5"/>
+  </linearGradient>
+  <linearGradient id="w" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#dff2f6"/>
+    <stop offset="1" stop-color="#a9d3e0"/>
+  </linearGradient>
+  <filter id="soft" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="16"/></filter>
+  <filter id="s2" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="5"/></filter>
+</defs><ellipse cx="310" cy="330" rx="250" ry="260" fill="url(#w)" opacity=".10"/>
+<ellipse cx="310" cy="700" rx="186" ry="24" fill="#14201f" opacity=".16" filter="url(#soft)"/>
+<path d="M104 372 C104 340 200 312 310 312 C420 312 516 340 516 372
+         L500 636 C498 672 414 692 310 692 C206 692 122 672 120 636 Z" fill="url(#g)"/>
+<path d="M104 372 C104 340 200 312 310 312 C420 312 516 340 516 372
+         L500 636 C498 672 414 692 310 692 C206 692 122 672 120 636 Z" fill="url(#v)" opacity=".7"/>
+<ellipse cx="310" cy="364" rx="212" ry="56" fill="#fcfaf8"/>
+<ellipse cx="310" cy="358" rx="212" ry="56" fill="url(#g)"/>
+<ellipse cx="310" cy="358" rx="188" ry="48" fill="#c8a772" opacity=".9"/>
+<ellipse cx="310" cy="361" rx="186" ry="46" fill="url(#w)" opacity=".9"/>
+<ellipse cx="310" cy="356" rx="26" ry="8" fill="#14201f" opacity=".14"/>
+<path d="M288 357 C290 340 330 340 332 357 Z" fill="#fbf7ee" opacity=".7"/>
+<path d="M118 402 C120 470 138 560 168 610" stroke="#fff" stroke-width="3" fill="none" opacity=".3" filter="url(#s2)"/>
+<path d="M110 380 C150 350 240 332 310 332" stroke="#fff" stroke-width="2" fill="none" opacity=".22"/>
+</svg>

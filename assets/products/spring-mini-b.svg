@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="120 430 300 300" width="620" height="760" role="img" aria-label="Asiajoly fountain"><defs>
+  <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#f9fafa"/>
+    <stop offset=".22" stop-color="#f9fafa"/>
+    <stop offset=".55" stop-color="#dfe4e6"/>
+    <stop offset=".82" stop-color="#bbc8cc"/>
+    <stop offset="1" stop-color="#8ba2ab"/>
+  </linearGradient>
+  <linearGradient id="v" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#8ba2ab" stop-opacity=".55"/>
+    <stop offset=".22" stop-color="#f9fafa" stop-opacity=".55"/>
+    <stop offset=".55" stop-color="#f9fafa" stop-opacity=".05"/>
+    <stop offset="1" stop-color="#8ba2ab" stop-opacity=".5"/>
+  </linearGradient>
+  <linearGradient id="w" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#dff2f6"/>
+    <stop offset="1" stop-color="#a9d3e0"/>
+  </linearGradient>
+  <filter id="soft" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="16"/></filter>
+  <filter id="s2" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="5"/></filter>
+</defs><ellipse cx="310" cy="330" rx="250" ry="260" fill="url(#w)" opacity=".10"/>
+<ellipse cx="310" cy="682" rx="163.4" ry="26" fill="#14201f" opacity=".16" filter="url(#soft)"/>
+<path d="M127.68 360 C127.68 330 208.51999999999998 302 310 302 C411.48 302 492.32 330 492.32 360
+         L476.84 616 C473.4 652 392.56 660 310 660
+         C227.44 660 146.6 652 143.16 616 Z"
+      fill="url(#g)"/>
+<path d="M127.68 360 C127.68 330 208.51999999999998 302 310 302 C411.48 302 492.32 330 492.32 360
+         L476.84 616 C473.4 652 392.56 660 310 660
+         C227.44 660 146.6 652 143.16 616 Z"
+      fill="url(#v)" opacity=".85"/>
+<ellipse cx="310" cy="352" rx="182.32" ry="56" fill="#f9fafa"/>
+<ellipse cx="310" cy="346" rx="182.32" ry="56" fill="url(#g)"/>
+<ellipse cx="310" cy="344" rx="163.4" ry="49" fill="#8ba2ab"/>
+<ellipse cx="310" cy="347" rx="161.68" ry="47" fill="url(#w)" opacity=".92"/>
+<ellipse cx="310" cy="341" rx="30" ry="9" fill="#14201f" opacity=".16"/>
+<path d="M286 342 C288 323 332 323 334 342 Z" fill="#f9fafa" opacity=".38"/>
+<path d="M291 342 C293 327 327 327 329 342 Z" fill="#eaf7fa" opacity=".65"/>
+<g fill="none" stroke="#eaf7fa" stroke-width="1.4" opacity=".7">
+  <ellipse cx="310" cy="348" rx="34" ry="10"/>
+  <ellipse cx="310" cy="352" rx="66" ry="18" opacity=".45"/>
+</g>
+<rect x="392.56" y="410" width="13" height="170" rx="6.5" fill="#63808c" opacity=".45"/>
+<rect x="394.28" y="412" width="9" height="166" rx="4.5" fill="#0f2a2a" opacity=".28"/>
+<rect x="394.28" y="492" width="9" height="86" rx="4.5" fill="#8fc3d4" opacity=".75"/>
+<path d="M127.68 360 C127.68 330 208.51999999999998 302 310 302 C411.48 302 492.32 330 492.32 360
+         L476.84 616 C473.4 652 392.56 660 310 660
+         C227.44 660 146.6 652 143.16 616 Z"
+      fill="none" stroke="#f9fafa" stroke-width="1.4" opacity=".55"/>
+<path d="M153.68 386 C153.68 372 167.68 366 181.68 364 L189.68 600 C173.68 596 159.68 588 157.68 574 Z" fill="#fff" opacity=".35" filter="url(#s2)"/>
+</svg>
