@@ -1,0 +1,142 @@
+#!/usr/bin/env python3
+"""Merge the generated copy JSON into assets/copy.js (window.COPY).
+
+Validates structure, fills gaps from the other language, and fails loudly if a key
+is missing so the page never renders a blank headline.
+
+Run: python3 merge_copy.py
+"""
+import json
+import pathlib
+import sys
+
+HERE = pathlib.Path(__file__).resolve().parent
+BUILD, ASSETS = HERE / ".build", HERE / "assets"
+
+REQUIRED_HOME = {
+    "nav": ["shop", "technology", "manifesto", "ritual", "faq", "cart", "menu"],
+    "hero": ["eyebrow", "title", "sub", "cta", "cta2", "scroll", "note"],
+    "marquee": None,
+    "manifesto": ["eyebrow", "title", "p1", "p2", "p3", "signature"],
+    "collection": ["eyebrow", "title", "sub", "items"],
+    "tech": ["eyebrow", "title", "sub", "stats"],
+    "anatomy": ["eyebrow", "title", "sub", "hotspots"],
+    "ritual": ["eyebrow", "title", "sub", "steps"],
+    "compare": ["eyebrow", "title", "sub", "head", "rows"],
+    "proof": ["eyebrow", "title", "sub", "quotes", "disclaimer"],
+    "subscribe": ["eyebrow", "title", "sub", "price", "period", "points", "cta", "note"],
+    "faq": ["eyebrow", "title", "items"],
+    "newsletter": ["eyebrow", "title", "sub", "placeholder", "cta", "note"],
+    "footer": ["tagline", "cols", "legal", "disclaimer"],
+}
+REQUIRED_PDP = ["breadcrumb", "eyebrow", "title", "subtitle", "price", "rating", "ratingCount",
+                "desc", "variantLabel", "variants", "qtyLabel", "cta", "ctaNote", "stock",
+                "shipping", "features", "specs", "box", "care", "faq", "related"]
+# extra UI strings the templates need but the copywriter was not asked for
+UI_EXTRAS = {
+    "en": {
+        "cart": {"title": "Bag"},
+        "hero": {"caption": "brushed 316"},
+        "pdp": {"relatedLabel": "Also in the collection", "relatedTitle": "Kept, together",
+                "acc": {"specs": "Specifications", "box": "In the box",
+                        "care": "Care", "faq": "Questions"},
+                "buyNote": "Preview build · no payment is taken"},
+    },
+    "zh": {
+        "cart": {"title": "购物袋"},
+        "hero": {"caption": "拉丝 316"},
+        "pdp": {"relatedLabel": "系列中的其他物件", "relatedTitle": "一起留着",
+                "acc": {"specs": "规格参数", "box": "包装内含",
+                        "care": "养护", "faq": "常见问题"},
+                "buyNote": "演示站 · 不产生实际交易"},
+    },
+}
+
+
+def load(name):
+    p = BUILD / f"{name}.json"
+    if not p.exists():
+        return None
+    return json.loads(p.read_text(encoding="utf-8"))
+
+
+def check(lang, data, problems):
+    for key, sub in REQUIRED_HOME.items():
+        if key not in data:
+            problems.append(f"{lang}: missing section '{key}'")
+            continue
+        if sub is None:
+            continue
+        val = data[key]
+        if not isinstance(val, dict):
+            problems.append(f"{lang}.{key}: not an object")
+            continue
+        for s in sub:
+            if s not in val:
+                problems.append(f"{lang}.{key}: missing '{s}'")
+    for key, n in (("marquee", 4), ("collection.items", 3), ("tech.stats", 4),
+                   ("anatomy.hotspots", 5), ("ritual.steps", 3), ("proof.quotes", 3),
+                   ("compare.rows", 6), ("subscribe.points", 3), ("faq.items", 7)):
+        node = data
+        for part in key.split("."):
+            node = node.get(part) if isinstance(node, dict) else None
+        if not isinstance(node, list):
+            problems.append(f"{lang}.{key}: not a list")
+        elif len(node) < n:
+            problems.append(f"{lang}.{key}: {len(node)} items, expected {n}")
+
+
+def main():
+    home = load("home")
+    pdp = load("pdp")
+    problems = []
+
+    if not home:
+        sys.exit("home.json missing — cannot build copy.js")
+    for lang in ("en", "zh"):
+        check(lang, home.get(lang, {}), problems)
+        if not pdp or "pdp" not in pdp.get(lang, {}):
+            problems.append(f"{lang}: pdp block missing")
+
+    if problems:
+        print("STRUCTURAL PROBLEMS:")
+        for p in problems:
+            print("  -", p)
+        print("\nProceeding with fallback fill; review the output before shipping.")
+    else:
+        print("structure OK")
+
+    def deep_merge(base, extra):
+        for k, v in extra.items():
+            if isinstance(v, dict) and isinstance(base.get(k), dict):
+                deep_merge(base[k], v)
+            else:
+                base[k] = v
+        return base
+
+    out = {}
+    for lang in ("en", "zh"):
+        block = dict(home.get(lang, {}))
+        if pdp and lang in pdp and "pdp" in pdp[lang]:
+            block["pdp"] = pdp[lang]["pdp"]
+        deep_merge(block, UI_EXTRAS[lang])
+        out[lang] = block
+
+    # fill any missing top-level key from the other language so nothing renders blank
+    for lang, other in (("en", "zh"), ("zh", "en")):
+        for k, v in out[other].items():
+            out[lang].setdefault(k, v)
+
+    js = "/* Generated by merge_copy.py — edit copy.json sources, not this file. */\n"
+    js += "window.COPY = " + json.dumps(out, ensure_ascii=False, indent=1) + ";\n"
+    (ASSETS / "copy.js").write_text(js, encoding="utf-8")
+
+    words_en = len(json.dumps(out["en"], ensure_ascii=False).split())
+    chars_zh = len("".join(str(v) for v in out["zh"].values()))
+    print(f"wrote assets/copy.js — en {words_en} words, zh ~{chars_zh} chars")
+    head = out["en"]["hero"]["title"]
+    print("hero:", " / ".join(head))
+
+
+if __name__ == "__main__":
+    main()

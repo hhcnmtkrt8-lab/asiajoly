@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RILL — Water, considered. | Stainless pet fountain</title>
+<meta name="description" content="RILL makes one object properly: a 316 stainless pet fountain with a 30-second teardown and a 24 dB pump. Designed to be kept, not replaced.">
+<meta property="og:title" content="RILL — Water, considered.">
+<meta property="og:description" content="A 316 stainless pet fountain with a 30-second teardown and a 24 dB pump. Designed to be kept, not replaced.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#08090b">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2308090b'/%3E%3Ctext x='16' y='22' font-family='Helvetica' font-size='13' fill='%23edebe5' text-anchor='middle' letter-spacing='2'%3ER%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+
+<header class="header" id="header">
+  <a class="brand" href="index.html">RILL<em>®</em></a>
+  <nav class="nav" aria-label="Primary">
+    <a href="#collection" data-i18n="nav.shop">Shop</a>
+    <a href="#engineering" data-i18n="nav.technology">Technology</a>
+    <a href="#ritual" data-i18n="nav.ritual">Ritual</a>
+    <a href="#faq" data-i18n="nav.faq">FAQ</a>
+  </nav>
+  <div class="spacer"></div>
+  <div class="tools">
+    <button class="icon-btn" id="langBtn" aria-label="Switch language"><span id="langLabel">中</span></button>
+    <button class="icon-btn" id="cartBtn" aria-label="Open bag">
+      <span id="cartLabel">Bag</span><span class="cart-count" id="cartCount">0</span>
+    </button>
+    <button class="icon-btn menu-btn" id="menuBtn" aria-label="Menu">☰</button>
+  </div>
+</header>
+
+<main>
+  <!-- ============ HERO ============ -->
+  <section class="hero">
+    <canvas id="caustics" aria-hidden="true"></canvas>
+    <div class="hero__glow" aria-hidden="true"></div>
+
+    <div class="hero__type wrap">
+      <p class="eyebrow" data-i18n="hero.eyebrow">Objects for animals</p>
+      <h1 class="display">
+        <span class="ln"><span data-i18n="hero.title.0">Water,</span></span>
+        <span class="ln"><span data-i18n="hero.title.1">considered.</span></span>
+        <span class="ln"><span data-i18n="hero.title.2" data-accent="1">RILL 01</span></span>
+      </h1>
+      <p class="hero__sub" data-i18n="hero.sub"></p>
+      <div class="hero__cta">
+        <a class="btn" href="product.html"><span data-i18n="hero.cta">Shop RILL 01</span></a>
+        <a class="btn btn--ghost" href="#engineering"><span data-i18n="hero.cta2">See the teardown</span></a>
+      </div>
+      <p class="hero__note" data-i18n="hero.note"></p>
+    </div>
+
+    <div class="hero__stage" id="heroStage">
+      <div class="ring" aria-hidden="true"></div>
+      <img src="assets/fountain-steel.svg" alt="RILL 01 stainless steel pet fountain" width="620" height="760">
+      <p class="hero__caption">RILL 01 — <span data-i18n="hero.caption">brushed 316</span></p>
+    </div>
+
+    <div class="scroll-cue"><i></i><span data-i18n="hero.scroll">Scroll</span></div>
+  </section>
+
+  <!-- ============ MARQUEE ============ -->
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee__track" id="marquee"></div>
+  </div>
+
+  <!-- ============ MANIFESTO ============ -->
+  <section class="light pad-y" id="manifesto">
+    <div class="wrap manifesto">
+      <div>
+        <p class="eyebrow" data-i18n="manifesto.eyebrow">01 — Manifesto</p>
+        <h2 class="h2" data-reveal data-i18n="manifesto.title"></h2>
+      </div>
+      <div class="manifesto__body">
+        <p data-reveal data-i18n="manifesto.p1"></p>
+        <p data-reveal style="--d:80ms" data-i18n="manifesto.p2"></p>
+        <p data-reveal style="--d:160ms" data-i18n="manifesto.p3"></p>
+        <p class="manifesto__sign" data-reveal style="--d:240ms" data-i18n="manifesto.signature"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ COLLECTION ============ -->
+  <section class="pad-y" id="collection">
+    <div class="wrap">
+      <div class="col-head">
+        <div>
+          <p class="eyebrow" data-i18n="collection.eyebrow">02 — The collection</p>
+          <h2 class="h2" data-reveal data-i18n="collection.title"></h2>
+        </div>
+        <p class="lede" style="max-width:34ch" data-reveal data-i18n="collection.sub"></p>
+      </div>
+      <div class="cards" id="cards"></div>
+    </div>
+  </section>
+
+  <!-- ============ ENGINEERING ============ -->
+  <section class="pad-y--sm" id="engineering">
+    <div class="wrap">
+      <div class="col-head">
+        <div>
+          <p class="eyebrow" data-i18n="tech.eyebrow">03 — Engineering</p>
+          <h2 class="h2" data-reveal data-i18n="tech.title"></h2>
+        </div>
+        <p class="lede" style="max-width:36ch" data-reveal data-i18n="tech.sub"></p>
+      </div>
+      <div class="stats" id="stats"></div>
+    </div>
+  </section>
+
+  <!-- ============ ANATOMY ============ -->
+  <section class="pad-y" id="anatomy">
+    <div class="wrap">
+      <div class="col-head">
+        <div>
+          <p class="eyebrow" data-i18n="anatomy.eyebrow">04 — Anatomy</p>
+          <h2 class="h2" data-reveal data-i18n="anatomy.title"></h2>
+        </div>
+      </div>
+      <div class="anatomy">
+        <div class="anatomy__stage" data-reveal="fade">
+          <figure class="anatomy__fig">
+            <img src="assets/fountain-steel.svg" alt="RILL 01 anatomy" width="620" height="760">
+            <button class="hot" style="top:42%;left:33%" data-hot="0" aria-label="Detail 1"></button>
+            <button class="hot" style="top:80%;left:50%" data-hot="1" aria-label="Detail 2"></button>
+            <button class="hot" style="top:60%;left:72%" data-hot="2" aria-label="Detail 3"></button>
+            <button class="hot" style="top:63%;left:38%" data-hot="3" aria-label="Detail 4"></button>
+            <button class="hot" style="top:88%;left:63%" data-hot="4" aria-label="Detail 5"></button>
+          </figure>
+        </div>
+        <ul class="hot-list" id="hotList"></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ RITUAL ============ -->
+  <section class="light pad-y" id="ritual">
+    <div class="wrap">
+      <div class="col-head">
+        <div>
+          <p class="eyebrow" data-i18n="ritual.eyebrow">05 — The ritual</p>
+          <h2 class="h2" data-reveal data-i18n="ritual.title"></h2>
+        </div>
+        <p class="lede" style="max-width:32ch" data-reveal data-i18n="ritual.sub"></p>
+      </div>
+      <div class="ritual" id="ritualGrid"></div>
+    </div>
+  </section>
+
+  <!-- ============ COMPARE ============ -->
+  <section class="light pad-y--sm" style="padding-bottom:clamp(72px,9vw,150px)">
+    <div class="wrap">
+      <div class="col-head">
+        <div>
+          <p class="eyebrow" data-i18n="compare.eyebrow">06 — Honest comparison</p>
+          <h2 class="h2" data-reveal data-i18n="compare.title"></h2>
+        </div>
+        <p class="lede" style="max-width:30ch" data-reveal data-i18n="compare.sub"></p>
+      </div>
+      <table class="cmp" id="cmp">
+        <thead><tr id="cmpHead"></tr></thead>
+        <tbody id="cmpBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ FIELD NOTES ============ -->
+  <section class="pad-y">
+    <div class="wrap">
+      <div class="col-head">
+        <div>
+          <p class="eyebrow" data-i18n="proof.eyebrow">07 — Field notes</p>
+          <h2 class="h2" data-reveal data-i18n="proof.title"></h2>
+        </div>
+        <p class="lede" style="max-width:30ch" data-reveal data-i18n="proof.sub"></p>
+      </div>
+      <div class="quotes" id="quotes"></div>
+      <p style="margin:24px 0 0;font-size:11.5px;color:var(--fg-dim)" data-i18n="proof.disclaimer"></p>
+    </div>
+  </section>
+
+  <!-- ============ SUBSCRIBE ============ -->
+  <section class="pad-y--sm">
+    <div class="wrap">
+      <div class="sub-card" data-reveal>
+        <div>
+          <p class="eyebrow" data-i18n="subscribe.eyebrow">08 — Kept, not replaced</p>
+          <h2 class="h2" data-i18n="subscribe.title" style="margin-bottom:14px"></h2>
+          <p class="lede" data-i18n="subscribe.sub"></p>
+          <ul class="sub-list" id="subList"></ul>
+          <p class="sub-card__note" data-i18n="subscribe.note"></p>
+        </div>
+        <div>
+          <div class="sub-card__price"><span data-i18n="subscribe.price">$19</span><small data-i18n="subscribe.period">/ quarter</small></div>
+          <button class="btn btn--full" style="margin-top:26px" data-add="filter" data-i18n="subscribe.cta"></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FAQ ============ -->
+  <section class="light pad-y" id="faq">
+    <div class="wrap" style="display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:clamp(24px,5vw,80px)">
+      <div>
+        <p class="eyebrow" data-i18n="faq.eyebrow">09 — Questions</p>
+        <h2 class="h2" data-reveal data-i18n="faq.title"></h2>
+      </div>
+      <div class="faq" id="faqList"></div>
+    </div>
+  </section>
+
+  <!-- ============ NEWSLETTER ============ -->
+  <section class="pad-y--sm">
+    <div class="wrap news">
+      <div>
+        <p class="eyebrow" data-i18n="newsletter.eyebrow">Keep in touch</p>
+        <h2 class="h2" data-reveal data-i18n="newsletter.title"></h2>
+      </div>
+      <div>
+        <form id="newsForm" novalidate>
+          <input type="email" id="newsEmail" required data-i18n-attr="placeholder:newsletter.placeholder" placeholder="Email address" aria-label="Email address">
+          <button type="submit" data-i18n="newsletter.cta">Join</button>
+        </form>
+        <p class="news__note" data-i18n="newsletter.note"></p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer__top">
+      <div class="footer__brand">
+        <div class="brand">RILL<em>®</em></div>
+        <p data-i18n="footer.tagline"></p>
+        <a class="link-u" href="product.html" data-i18n="nav.shop">Shop</a>
+      </div>
+      <div id="footCols" style="display:contents"></div>
+    </div>
+    <div class="footer__bottom">
+      <span data-i18n="footer.legal"></span>
+      <span class="grow"></span>
+      <div class="footer__badges" id="badges"></div>
+      <span data-i18n="footer.disclaimer"></span>
+    </div>
+  </div>
+</footer>
+
+<!-- ============ CART ============ -->
+<div class="overlay" id="overlay"></div>
+<aside class="drawer" id="drawer" aria-label="Shopping bag" aria-hidden="true">
+  <div class="drawer__head">
+    <h3 data-i18n="cart.title">Bag</h3>
+    <button class="icon-btn" id="closeCart" aria-label="Close">✕</button>
+  </div>
+  <div class="drawer__body" id="cartBody"></div>
+  <div class="drawer__foot" id="cartFoot"></div>
+</aside>
+<div class="toast" id="toast"></div>
+
+<script src="assets/copy.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>
