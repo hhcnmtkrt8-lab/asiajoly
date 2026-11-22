@@ -7,6 +7,7 @@ data-i18n hooks that app.js uses to switch to Chinese at runtime.
 
 Run: python3 build_site.py
 """
+import hashlib
 import html
 import json
 import pathlib
@@ -35,7 +36,19 @@ LEGAL = load("legal")["en"]
 PRODUCTS = load("products")["en"]
 BY_ID = {p["id"]: p for p in PRODUCTS}
 
-PHOTOS = {p["id"]: f"assets/products/{p['id']}.svg" for p in PRODUCTS}
+# Content hash of the static assets: appended to every asset URL so a new deploy
+# always busts the CDN / browser cache (Hostinger's CDN caches CSS for 7 days).
+_asset_files = [HERE / "assets" / "styles.css", HERE / "assets" / "app.js",
+                HERE / "assets" / "copy.js", HERE / "assets" / "products.js"]
+_asset_files += sorted((HERE / "assets" / "products").glob("*.svg"))
+_h = hashlib.md5()
+for _f in _asset_files:
+    if _f.exists():
+        _h.update(_f.name.encode())
+        _h.update(_f.read_bytes())
+BUILD_ID = _h.hexdigest()[:10]
+
+PHOTOS = {p["id"]: f"assets/products/{p['id']}.svg?v={BUILD_ID}" for p in PRODUCTS}
 
 CARE = {
     "Fountains": ("Rinse the five parts weekly, or put them in the dishwasher. Swap the filter every "
@@ -116,7 +129,7 @@ def head(title, desc, canonical, extra=""):
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="assets/favicon-180.png">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2314201f'/%3E%3Ctext x='16' y='22' font-family='Helvetica' font-size='13' fill='%23fdfbf7' text-anchor='middle' letter-spacing='1'%3EA%3C/text%3E%3C/svg%3E">
-<link rel="stylesheet" href="assets/styles.css">{extra}
+<link rel="stylesheet" href="assets/styles.css?v={BUILD_ID}">{extra}
 </head>
 <body>"""
 
@@ -205,9 +218,9 @@ def footer():
   <div class="drawer__foot" id="cartFoot"></div>
 </aside>
 <div class="toast" id="toast"></div>
-<script src="assets/copy.js"></script>
-<script src="assets/products.js"></script>
-<script src="assets/app.js"></script>
+<script src="assets/copy.js?v={BUILD_ID}"></script>
+<script src="assets/products.js?v={BUILD_ID}"></script>
+<script src="assets/app.js?v={BUILD_ID}"></script>
 </body>
 </html>"""
 

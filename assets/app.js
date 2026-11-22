@@ -17,6 +17,20 @@
   let lang = localStorage.getItem(LANG_KEY) || "en";
   if (lang !== "zh" && lang !== "en") lang = "en";
 
+  // Read the cache-busting version off our own <script src="...app.js?v=xxx"> tag,
+  // so images injected at runtime stay in sync with the deployed build.
+  const ASSET_V = (function () {
+    const tag = Array.prototype.slice.call(document.scripts).filter(function (s) {
+      return s.src && s.src.indexOf("app.js") >= 0;
+    })[0];
+    const m = tag && tag.src.match(/[?&]v=([\w-]+)/);
+    return m ? m[1] : "";
+  })();
+  const asset = function (u) {
+    if (!u || !ASSET_V) return u;
+    return u + (u.indexOf("?") >= 0 ? "&" : "?") + "v=" + ASSET_V;
+  };
+
   const $ = function (s, r) { return (r || document).querySelector(s); };
   const $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
   const esc = function (s) {
@@ -72,7 +86,7 @@
     }
     return '<article class="card" data-reveal style="--d:' + (delay || 0) + 'ms" data-id="' + p.id + '">' +
       '<a class="card__media" href="p-' + p.id + '.html">' + badge +
-      '<img src="' + p.img + '" alt="' + esc(pt(p, "name")) + '" loading="lazy" width="620" height="760">' +
+      '<img src="' + asset(p.img) + '" alt="' + esc(pt(p, "name")) + '" loading="lazy" width="620" height="760">' +
       '<span class="card__swap"><span class="btn btn--sm btn--light">' + esc(t("common.view")) + "</span></span></a>" +
       '<div class="card__body"><div class="card__row">' +
       '<a class="card__name" href="p-' + p.id + '.html">' + esc(pt(p, "name")) + "</a>" +
