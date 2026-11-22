@@ -684,6 +684,16 @@ section { position: relative; }
 .buybar .p { font-size: 14px; flex: 1; }
 .buybar .p small { display: block; font-size: 10.5px; color: var(--fg-dim); letter-spacing: .08em; text-transform: uppercase; }
 
+
+/* ---------- CJK typography ---------- */
+html[lang="zh-CN"] .display { line-height: 1.2; letter-spacing: -.005em; }
+html[lang="zh-CN"] .h2 { line-height: 1.28; letter-spacing: 0; }
+html[lang="zh-CN"] .hero__sub,
+html[lang="zh-CN"] .lede,
+html[lang="zh-CN"] .manifesto__body p { line-height: 1.82; }
+html[lang="zh-CN"] .eyebrow { letter-spacing: .18em; }
+html[lang="zh-CN"] .btn { letter-spacing: .08em; }
+
 /* ---------- responsive ---------- */
 @media (max-width: 1080px) {
   .hero { grid-template-columns: 1fr; align-items: start; padding-top: 84px; min-height: auto; padding-bottom: 54px; }
