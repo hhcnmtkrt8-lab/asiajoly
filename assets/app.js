@@ -12,10 +12,11 @@
   const BY_ID = {};
   ITEMS.forEach(function (p) { BY_ID[p.id] = p; });
 
-  const LANG_KEY = "aj-lang";
   const BAG_KEY = "aj-bag";
-  let lang = localStorage.getItem(LANG_KEY) || "en";
-  if (lang !== "zh" && lang !== "en") lang = "en";
+  const CONSENT_KEY = "aj-consent";
+  const CONFIG = window.AJ_CONFIG || {};
+  let lang = (document.documentElement.lang || "en").toLowerCase().indexOf("zh") === 0 ? "zh" : "en";
+  const BASE = (document.querySelector('meta[name="aj-base"]') || {}).content || "";
 
   // Read the cache-busting version off our own <script src="...app.js?v=xxx"> tag,
   // so images injected at runtime stay in sync with the deployed build.
@@ -27,8 +28,10 @@
     return m ? m[1] : "";
   })();
   const asset = function (u) {
-    if (!u || !ASSET_V) return u;
-    return u + (u.indexOf("?") >= 0 ? "&" : "?") + "v=" + ASSET_V;
+    if (!u) return u;
+    let out = u;
+    if (BASE && out.indexOf("assets/") === 0) out = BASE + out;
+    return ASSET_V ? out + (out.indexOf("?") >= 0 ? "&" : "?") + "v=" + ASSET_V : out;
   };
 
   const $ = function (s, r) { return (r || document).querySelector(s); };
@@ -59,7 +62,9 @@
   function pt(p, key) { return (p && p[lang] && p[lang][key]) || (p && p.en && p.en[key]) || ""; }
 
   function applyStatic() {
+    // Server-rendered text is already correct for this language; only fill gaps.
     $$("[data-i18n]").forEach(function (el) {
+      if (el.textContent.trim()) return;
       const v = t(el.dataset.i18n);
       if (typeof v === "string" && v) el.textContent = v;
     });
@@ -68,8 +73,6 @@
       if (typeof v === "string") el.textContent = v;
     });
     document.documentElement.lang = lang === "zh" ? "zh-CN" : "en";
-    const lb = $("#langLabel");
-    if (lb) lb.textContent = lang === "zh" ? "EN" : "中";
     const cl = $("#cartLabel");
     if (cl) cl.textContent = lang === "zh" ? "购物袋" : "Cart";
   }
@@ -240,7 +243,7 @@
   }
   function writeBag(items) {
     localStorage.setItem(BAG_KEY, JSON.stringify(items));
-    renderBagCount(); renderBag();
+    renderBagCount(); renderBag(); renderCartPage(); renderCheckout();
   }
   function bagCount() { return readBag().reduce(function (s, i) { return s + i.qty; }, 0); }
   function bagTotal(items) {
@@ -283,7 +286,9 @@
         (total >= freeAt ? esc(t("cart.free")) : "$8") + "</span></div>" +
       '<div class="drawer__row total"><span>' + esc(t("cart.total")) + "</span><b>" +
         money(total + (total >= freeAt ? 0 : 8)) + "</b></div>" +
-      '<button class="btn btn--full" id="checkout"><span>' + esc(t("cart.checkout")) + "</span></button>" +
+      '<a class="btn btn--full" href="' + BASE + 'cart.html"><span>' + esc(t("cart.checkout")) + "</span></a>" +
+      '<a class="link-u" href="' + BASE + 'cart.html" style="display:block;text-align:center;margin-top:12px;font-size:11px">' +
+        esc(lang === "zh" ? "查看购物袋" : "View bag") + "</a>" +
       '<p style="margin:10px 0 0;font-size:11px;color:var(--muted);text-align:center">' + esc(t("cart.note")) + "</p>";
   }
 
@@ -388,14 +393,170 @@
     $("#mnavClose") && $("#mnavClose").addEventListener("click", function () { mnav.classList.remove("is-open"); document.body.classList.remove("is-locked"); });
   }
 
-  function setLang(l) {
-    lang = l;
-    localStorage.setItem(LANG_KEY, l);
-    applyStatic();
-    renderGrids();
-    renderPdpText();
-    renderBag();
-    updateCount();
+
+  /* ---------------- cart page ---------------- */
+  function lineHtml(i) {
+    const p = BY_ID[i.id] || { name: i.id, price: 0, img: "" };
+    return '<div class="cart-line">' +
+      '<div class="cart-line__prod">' +
+        '<div class="cart-line__img"><img src="' + asset(p.img) + '" alt=""></div>' +
+        '<div><h3>' + esc(pt(p, "name")) + "</h3>" +
+        '<p class="small">' + esc(t("pdp.inStock")) + "</p></div>" +
+      "</div>" +
+      '<div><div class="qty"><button data-qty="-1" data-id="' + i.id + '">−</button>' +
+        "<span>" + i.qty + "</span>" +
+        '<button data-qty="1" data-id="' + i.id + '">+</button></div>' +
+        '<button class="rm" data-rm="' + i.id + '">' + esc(t("cart.remove")) + "</button></div>" +
+      '<div class="lineprice">' + money(p.price * i.qty) + "</div></div>";
+  }
+
+  function totals() {
+    const items = readBag();
+    const sub = bagTotal(items);
+    const freeAt = CONFIG.freeShippingOver || 120;
+    const flat = CONFIG.flatShipping || 8;
+    const ship = sub === 0 ? 0 : (sub >= freeAt ? 0 : flat);
+    return { items: items, sub: sub, ship: ship, total: sub + ship, freeAt: freeAt };
+  }
+
+  function renderCartPage() {
+    const lines = $("#cartLines");
+    if (!lines) return;
+    const T = totals();
+    const empty = $("#cartEmpty");
+    if (!T.items.length) {
+      lines.innerHTML = "";
+      if (empty) empty.hidden = false;
+    } else {
+      if (empty) empty.hidden = true;
+      lines.innerHTML = T.items.map(lineHtml).join("");
+    }
+    if ($("#sumSubtotal")) $("#sumSubtotal").textContent = money(T.sub);
+    if ($("#sumShipping")) $("#sumShipping").textContent = T.sub === 0 ? "—" : (T.ship ? money(T.ship) : t("cart.free"));
+    if ($("#sumTotal")) $("#sumTotal").textContent = money(T.total);
+  }
+
+  /* ---------------- checkout ---------------- */
+  function renderCheckout() {
+    const box = $("#checkoutLines");
+    if (!box) return;
+    const T = totals();
+    box.innerHTML = T.items.map(function (i) {
+      const p = BY_ID[i.id] || { price: 0 };
+      return '<div class="cart-row"><span>' + esc(pt(p, "name")) + " × " + i.qty +
+             "</span><span>" + money(p.price * i.qty) + "</span></div>";
+    }).join("");
+    if ($("#coSubtotal")) $("#coSubtotal").textContent = money(T.sub);
+    if ($("#coShipping")) $("#coShipping").textContent = T.ship ? money(T.ship) : t("cart.free");
+    if ($("#coTotal")) $("#coTotal").textContent = money(T.total);
+  }
+
+  function orderNumber() {
+    const d = new Date();
+    const pad = function (n) { return String(n).padStart(2, "0"); };
+    const rnd = Math.floor(1000 + Math.random() * 9000);
+    return "AJ-" + String(d.getFullYear()).slice(2) + pad(d.getMonth() + 1) + pad(d.getDate()) + "-" + rnd;
+  }
+
+  function initCheckout() {
+    const form = $("#checkoutForm");
+    if (!form) return;
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      const T = totals();
+      if (!T.items.length) { toast(lang === "zh" ? "购物袋是空的" : "Your bag is empty"); return; }
+      if (!form.checkValidity()) { form.reportValidity(); return; }
+      const data = {};
+      new FormData(form).forEach(function (v, k) { data[k] = v; });
+      const order = {
+        no: orderNumber(), email: data.email || "", name: data.name || "",
+        total: T.total, items: T.items.slice(), country: data.country || "",
+        method: data.method || "", placed: new Date().toISOString(),
+      };
+      try { sessionStorage.setItem("aj-order", JSON.stringify(order)); } catch (err) {}
+      writeBag([]);
+      location.href = "success.html?order=" + encodeURIComponent(order.no);
+    });
+  }
+
+  function initSuccess() {
+    const el = $("#orderNo");
+    if (!el) return;
+    let order = null;
+    try { order = JSON.parse(sessionStorage.getItem("aj-order") || "null"); } catch (e) {}
+    const q = new URLSearchParams(location.search).get("order");
+    el.textContent = (order && order.no) || q || "—";
+    if (order && order.email && $("#orderEmail")) {
+      $("#orderEmail").textContent = order.email + " · " + money(order.total);
+    }
+  }
+
+  /* ---------------- consent + analytics ---------------- */
+  function consentCopy() {
+    const c = t("consent") || {};
+    return {
+      title: c.title || (lang === "zh" ? "关于 Cookie" : "A note on cookies"),
+      text: c.text || (lang === "zh"
+        ? "我们只用必要 Cookie 记住你的购物袋和语言。同意后我们才会加载访问统计。"
+        : "We use essential cookies to remember your bag and language. Analytics only loads if you accept."),
+      accept: c.accept || (lang === "zh" ? "同意" : "Accept"),
+      reject: c.reject || (lang === "zh" ? "仅必要" : "Essential only"),
+      note: c.note || "",
+      settings: c.settings || "Cookie settings",
+    };
+  }
+
+  function loadAnalytics() {
+    const a = (CONFIG.analytics || {});
+    if (a.ga4 && !window.__ajGa) {
+      window.__ajGa = 1;
+      const s = document.createElement("script");
+      s.async = true;
+      s.src = "https://www.googletagmanager.com/gtag/js?id=" + encodeURIComponent(a.ga4);
+      document.head.appendChild(s);
+      window.dataLayer = window.dataLayer || [];
+      window.gtag = function () { window.dataLayer.push(arguments); };
+      window.gtag("js", new Date());
+      window.gtag("config", a.ga4, { anonymize_ip: true });
+    }
+    if (a.plausibleDomain && !window.__ajPl) {
+      window.__ajPl = 1;
+      const s = document.createElement("script");
+      s.defer = true;
+      s.setAttribute("data-domain", a.plausibleDomain);
+      s.src = "https://plausible.io/js/script.js";
+      document.head.appendChild(s);
+    }
+  }
+
+  function renderConsent(force) {
+    const c = consentCopy();
+    let saved = null;
+    try { saved = localStorage.getItem(CONSENT_KEY); } catch (e) {}
+    if (saved === "accept") loadAnalytics();
+    if (saved && !force) return;
+
+    const el = document.createElement("div");
+    el.className = "consent";
+    el.setAttribute("role", "dialog");
+    el.setAttribute("aria-label", c.title);
+    el.innerHTML =
+      "<div><strong>" + esc(c.title) + "</strong><p>" + esc(c.text) +
+      (c.note ? ' <a href="privacy.html">' + esc(c.note) + "</a>" : "") + "</p></div>" +
+      '<div class="consent__btns">' +
+      '<button class="btn btn--ghost btn--sm" data-consent="reject"><span>' + esc(c.reject) + "</span></button>" +
+      '<button class="btn btn--sm" data-consent="accept"><span>' + esc(c.accept) + "</span></button>" +
+      "</div>";
+    document.body.appendChild(el);
+    requestAnimationFrame(function () { el.classList.add("is-on"); });
+    el.addEventListener("click", function (e) {
+      const b = e.target.closest("[data-consent]");
+      if (!b) return;
+      try { localStorage.setItem(CONSENT_KEY, b.dataset.consent); } catch (err) {}
+      if (b.dataset.consent === "accept") loadAnalytics();
+      el.classList.remove("is-on");
+      setTimeout(function () { el.remove(); }, 400);
+    });
   }
 
   /* ---------------- boot ---------------- */
@@ -409,9 +570,13 @@
     renderPdpText();
     renderBagCount();
     renderBag();
+    renderCartPage();
+    renderCheckout();
+    initCheckout();
+    initSuccess();
+    renderConsent(false);
     observeReveals();
 
-    $("#langBtn") && $("#langBtn").addEventListener("click", function () { setLang(lang === "zh" ? "en" : "zh"); });
     $("#cartBtn") && $("#cartBtn").addEventListener("click", openBag);
     $("#closeCart") && $("#closeCart").addEventListener("click", closeBag);
     $("#overlay") && $("#overlay").addEventListener("click", closeBag);
@@ -440,9 +605,6 @@
         toast(lang === "zh" ? "演示站：结算未接入" : "Preview build: checkout not connected");
       }
     });
-
-    // if the visitor previously chose Chinese, switch immediately
-    if (lang === "zh") setTimeout(function () { setLang("zh"); }, 0);
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);

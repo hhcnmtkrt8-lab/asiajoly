@@ -644,6 +644,75 @@ window.COPY = {
     "send": "Send application"
    }
   },
+  "cartPage": {
+   "eyebrow": "Bag",
+   "title": "A short list of good things",
+   "sub": "Check the details, then we'll take it from here.",
+   "empty": "Your bag is empty for now, and the shelves are full.",
+   "emptyCta": "Shop the collection",
+   "item": "Item",
+   "qty": "Qty",
+   "price": "Price",
+   "remove": "Remove",
+   "summary": "Order summary",
+   "subtotal": "Subtotal",
+   "shipping": "Shipping",
+   "free": "Free",
+   "taxNote": "Taxes are calculated at checkout.",
+   "total": "Total",
+   "checkout": "Checkout",
+   "continue": "Continue shopping",
+   "shipNote": "Free shipping over $120, flat $8 below that.",
+   "trust": [
+    "30-day trial, no fuss",
+    "Easy, honest returns",
+    "Ships in 2–4 business days"
+   ]
+  },
+  "checkout": {
+   "eyebrow": "Checkout",
+   "title": "A few details, then done",
+   "contact": "Contact",
+   "shippingHead": "Shipping address",
+   "paymentHead": "Payment",
+   "email": "Email",
+   "name": "Full name",
+   "address": "Address",
+   "city": "City",
+   "zip": "Postal code",
+   "country": "Country",
+   "phone": "Phone (optional)",
+   "method": "Shipping method",
+   "standard": "Standard (3-5 days)",
+   "express": "Express (1-2 days)",
+   "payNote": "This is a preview build — no card is charged and no order is placed.",
+   "placeOrder": "Place order",
+   "back": "Back to bag",
+   "summary": "In your bag",
+   "demoBadge": "Preview build"
+  },
+  "success": {
+   "eyebrow": "Order",
+   "title": "Thanks, you're all set",
+   "sub": "Everything's confirmed — here's what happens next.",
+   "orderLabel": "Order number",
+   "emailNote": "A confirmation email is on its way with your order details.",
+   "next": "What happens next",
+   "steps": [
+    "We pack and ship it",
+    "You'll get a tracking link",
+    "It arrives in 3–5 days"
+   ],
+   "cta": "Continue shopping"
+  },
+  "consent": {
+   "title": "Cookies, kept simple",
+   "text": "Essential cookies keep your bag and preferences working. A few optional ones help us see what's useful, but the site works just as well without them.",
+   "accept": "Accept",
+   "reject": "Only essential",
+   "settings": "Cookie settings",
+   "note": "Details in our Privacy Policy."
+  },
   "cart": {
    "title": "Your bag",
    "empty": "Your bag is empty.",
@@ -1324,6 +1393,75 @@ window.COPY = {
     "message": "介绍一下你的店",
     "send": "提交申请"
    }
+  },
+  "cartPage": {
+   "eyebrow": "购物袋",
+   "title": "几样好东西，简简单单",
+   "sub": "确认一下细节，剩下的交给我们。",
+   "empty": "购物袋还空着，货架倒是满的。",
+   "emptyCta": "逛逛全系列",
+   "item": "商品",
+   "qty": "数量",
+   "price": "价格",
+   "remove": "移除",
+   "summary": "订单摘要",
+   "subtotal": "小计",
+   "shipping": "运费",
+   "free": "免费",
+   "taxNote": "税费将在结算时计算。",
+   "total": "合计",
+   "checkout": "去结算",
+   "continue": "继续逛逛",
+   "shipNote": "满 $120 免运费，不足则统一 $8。",
+   "trust": [
+    "30 天试用，不折腾",
+    "退货简单，不藏猫腻",
+    "2–4 个工作日发货"
+   ]
+  },
+  "checkout": {
+   "eyebrow": "结算",
+   "title": "几项信息，马上就好",
+   "contact": "联系方式",
+   "shippingHead": "收货地址",
+   "paymentHead": "付款方式",
+   "email": "邮箱",
+   "name": "姓名",
+   "address": "地址",
+   "city": "城市",
+   "zip": "邮编",
+   "country": "国家",
+   "phone": "电话（选填）",
+   "method": "配送方式",
+   "standard": "标准（3–5 天）",
+   "express": "加急（1–2 天）",
+   "payNote": "这是演示站，不会扣款，也不会下单。",
+   "placeOrder": "提交订单",
+   "back": "返回购物袋",
+   "summary": "购物袋中的商品",
+   "demoBadge": "演示站"
+  },
+  "success": {
+   "eyebrow": "订单",
+   "title": "谢谢，都安排好了",
+   "sub": "都已确认，接下来的流程如下。",
+   "orderLabel": "订单号",
+   "emailNote": "确认邮件已发送到你的邮箱，内含订单详情。",
+   "next": "接下来的流程",
+   "steps": [
+    "我们打包、发货",
+    "你会收到物流单号",
+    "3–5 天内送达"
+   ],
+   "cta": "继续逛逛"
+  },
+  "consent": {
+   "title": "Cookie，说清楚",
+   "text": "必需的 Cookie 用来记住购物袋和偏好设置。另有几个可选的帮我们了解哪些内容有用，不点接受也完全不影响使用。",
+   "accept": "接受",
+   "reject": "仅必要",
+   "settings": "Cookie 设置",
+   "note": "详见《隐私政策》。"
   },
   "cart": {
    "title": "购物袋",

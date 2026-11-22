@@ -30,11 +30,33 @@ def load(name, fallback=None):
     return fallback
 
 
-SITE = load("site")["en"]
-JOURNAL = load("journal")["en"]
-LEGAL = load("legal")["en"]
-PRODUCTS = load("products")["en"]
-BY_ID = {p["id"]: p for p in PRODUCTS}
+_SITE = load("site")
+_JOURNAL = load("journal")
+_LEGAL = load("legal")
+_PRODUCTS = load("products")
+_COMMERCE = load("commerce") if (BUILD / "commerce.json").exists() else {"en": {}, "zh": {}}
+
+LANG = "en"
+SITE = JOURNAL = LEGAL = COMMERCE = None
+PRODUCTS = BY_ID = None
+
+
+def set_lang(lang):
+    """Point every renderer at one language tree. Called once per build pass."""
+    global LANG, SITE, JOURNAL, LEGAL, COMMERCE, PRODUCTS, BY_ID
+    LANG = lang
+    SITE = _SITE[lang]
+    JOURNAL = _JOURNAL[lang]
+    LEGAL = _LEGAL[lang]
+    COMMERCE = _COMMERCE.get(lang, {})
+    PRODUCTS = _PRODUCTS[lang]
+    BY_ID = {p["id"]: p for p in PRODUCTS}
+
+
+set_lang("en")
+IS_ZH = False
+BASE = ""          # href prefix for the current pass ("" for /, "../" for /zh/)
+CURRENT = "index.html"
 
 # Content hash of the static assets: appended to every asset URL so a new deploy
 # always busts the CDN / browser cache (Hostinger's CDN caches CSS for 7 days).
@@ -111,20 +133,39 @@ def money(n):
 
 
 # ----------------------------------------------------------------- chrome
+def slug_of(page):
+    return "home" if page == "index.html" else page[:-5]
+
+
 def head(title, desc, canonical, extra=""):
+    en_url = DOMAIN + "/" + canonical
+    zh_url = DOMAIN + "/zh/" + canonical
+    url = zh_url if IS_ZH else en_url
+    og = f"{DOMAIN}/assets/og/{slug_of(canonical)}.png"
+    html_lang = "zh-CN" if IS_ZH else "en"
     return f"""<!doctype html>
-<html lang="en" class="js">
+<html lang="{html_lang}" class="js">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{esc(title)}</title>
 <meta name="description" content="{esc(desc)}">
-<link rel="canonical" href="{DOMAIN}/{canonical}">
+<link rel="canonical" href="{url}">
+<link rel="alternate" hreflang="en" href="{en_url}">
+<link rel="alternate" hreflang="zh-Hans" href="{zh_url}">
+<link rel="alternate" hreflang="x-default" href="{en_url}">
+<meta name="aj-base" content="{BASE}">
 <meta property="og:site_name" content="{BRAND}">
 <meta property="og:title" content="{esc(title)}">
 <meta property="og:description" content="{esc(desc)}">
 <meta property="og:type" content="website">
-<meta property="og:url" content="{DOMAIN}/{canonical}">
+<meta property="og:url" content="{url}">
+<meta property="og:image" content="{og}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="{'zh_CN' if IS_ZH else 'en_US'}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="{og}">
 <meta name="theme-color" content="#fdfbf7">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="assets/favicon-180.png">
@@ -143,21 +184,24 @@ NAV = [
 ]
 
 
+NAV_ZH = {"shop": "商店", "about": "关于", "technology": "技术", "journal": "札记", "faq": "常见问题"}
+
+
 def header(active):
     links = "".join(
         f'<a href="{href}" data-i18n="nav.{key}"{" aria-current=\"page\"" if active == key else ""}>'
-        f'{esc(SITE["nav"].get(key, label).title() if key != "faq" else "FAQ")}</a>'
+        f'{esc(NAV_ZH.get(key) if IS_ZH else SITE["nav"].get(key, label).title() if key != "faq" else "FAQ")}</a>'
         for href, label, key in NAV
     )
     return f"""
-<div class="announce" data-i18n="common.freeShip">{esc(SITE['common']['freeShip'])} · 30-day trial</div>
+<div class="announce" data-i18n="common.freeShip">{esc(SITE['common']['freeShip'])} · {'30 天试用' if IS_ZH else '30-day trial'}</div>
 <header class="header" id="header">
   <div class="header__in">
     <a class="brand" href="index.html">ASIA<em>JOLY</em></a>
     <nav class="nav" aria-label="Primary">{links}</nav>
     <div class="spacer"></div>
     <div class="tools">
-      <button class="icon-btn" id="langBtn" aria-label="Switch language"><span id="langLabel">中</span></button>
+      <a class="icon-btn" id="langBtn" href="{(BASE if IS_ZH else 'zh/')}{CURRENT}" hreflang="{'en' if IS_ZH else 'zh-Hans'}" aria-label="Switch language"><span id="langLabel">{'EN' if IS_ZH else '中'}</span></a>
       <button class="icon-btn" id="cartBtn" aria-label="Open bag"><span id="cartLabel">Cart</span>
         <span class="cart-count" id="cartCount">0</span></button>
       <button class="icon-btn menu-btn" id="menuBtn" aria-label="Menu">☰</button>
@@ -204,7 +248,8 @@ def footer():
     <div class="footer__bottom">
       <span data-i18n="footer.legal">{esc(SITE['footer']['legal'])}</span>
       <span class="grow"></span>
-      <div class="pay"><span>VISA</span><span>MC</span><span>AMEX</span><span>APPLE PAY</span><span>SHOP PAY</span></div>
+      <button class="cookie-link" data-cookie-settings>Cookie settings</button>
+      <div class="pay"><span>VISA</span><span>MC</span><span>AMEX</span><span>APPLE PAY</span></div>
       <span>{esc(SITE['footer']['disclaimer'])}</span>
     </div>
   </div>
@@ -218,6 +263,7 @@ def footer():
   <div class="drawer__foot" id="cartFoot"></div>
 </aside>
 <div class="toast" id="toast"></div>
+<script src="assets/config.js?v={BUILD_ID}"></script>
 <script src="assets/copy.js?v={BUILD_ID}"></script>
 <script src="assets/products.js?v={BUILD_ID}"></script>
 <script src="assets/app.js?v={BUILD_ID}"></script>
@@ -226,10 +272,18 @@ def footer():
 
 
 def page(title, desc, canonical, body, active=""):
+    global CURRENT
+    CURRENT = canonical
     return head(title, desc, canonical) + header(active) + "<main>" + body + "</main>" + footer()
 
 
 # ----------------------------------------------------------------- blocks
+def page_ld(title, desc, canonical, body, active="", ld=""):
+    global CURRENT
+    CURRENT = canonical
+    return head(title, desc, canonical, ld) + header(active) + "<main>" + body + "</main>" + footer()
+
+
 def section_head(eyebrow, title, sub="", href="", label=""):
     link = f'<a class="link-u" href="{href}">{esc(label)} →</a>' if href else ""
     sub_html = f'<p class="lede" data-i18n="{sub}">{esc(_lookup(sub))}</p>' if sub else ""
@@ -288,7 +342,7 @@ def accordion(label, inner, open_=False):
 # ----------------------------------------------------------------- pages
 def build_home():
     h = SITE["home"]
-    title = " / ".join(h["hero"]["title"])
+    title = " ".join(h["hero"]["title"])
     ticker = "".join(
         f'<span data-i18n="home.ticker.{i}">{esc(x)}</span>'
         for _pass in range(2)
@@ -328,7 +382,7 @@ def build_home():
       <p class="hero__note" data-i18n="home.hero.note">{esc(h['hero']['note'])}</p>
     </div>
     <div class="hero__stage" data-reveal>
-      <span class="hero__badge"><span data-i18n="common.best">Best seller</span> · Spring 01</span>
+      <span class="hero__badge"><span data-i18n="common.best">{esc(SITE['common'].get('best') or ('畅销' if IS_ZH else 'Best seller'))}</span> · Spring 01</span>
       <img src="assets/products/hero.svg" alt="Asiajoly Spring 01 fountain" width="620" height="760">
       <div class="hero__stamp"><span>FROM</span><b>$129</b><span>FREE SHIP</span></div>
     </div>
@@ -403,8 +457,7 @@ def build_home():
     </div>
   </div>
 </section>"""
-    return (head(f"{BRAND} — {title}", h["hero"]["sub"], "index.html", org_jsonld())
-            + header("") + "<main>" + body + "</main>" + footer())
+    return page_ld(f"{BRAND} — {title}", h["hero"]["sub"], "index.html", body, "", org_jsonld())
 
 
 def build_shop():
@@ -504,8 +557,7 @@ def build_product(p):
 <div class="buybar" id="buybar"><div class="p"><small>{esc(p['name'])}</small>
   <span id="bbPrice">{money(p['price'])}</span></div>
   <button class="btn btn--sm" data-add="{pid}"><span data-i18n="common.addToBag">Add to bag</span></button></div>"""
-    return (head(f"{p['name']} — {BRAND}", p["desc"], f"p-{pid}.html", product_jsonld(p))
-            + header("shop") + "<main>" + body + "</main>" + footer())
+    return page_ld(f"{p['name']} — {BRAND}", p["desc"], f"p-{pid}.html", body, "shop", product_jsonld(p))
 
 
 def build_about():
@@ -703,49 +755,186 @@ def build_404():
     return page(f"Not found — {BRAND}", n["sub"], "404.html", body)
 
 
-def main():
-    out = HERE
-    pages = {
-        "index.html": build_home(),
-        "shop.html": build_shop(),
-        "about.html": build_about(),
-        "technology.html": build_technology(),
-        "journal.html": build_journal(),
-        "faq.html": build_faq(),
-        "contact.html": build_contact(),
-        "wholesale.html": build_wholesale(),
-        "404.html": build_404(),
-    }
-    for i, a in enumerate(JOURNAL["articles"]):
-        pages[f"journal-{i+1}.html"] = build_article(i, a)
-    for slug in ("shipping", "returns", "warranty", "privacy", "terms"):
-        pages[f"{slug}.html"] = build_legal(f"{slug}.html", LEGAL[slug])
-    for p in PRODUCTS:
-        pages[f"p-{p['id']}.html"] = build_product(p)
 
-    for name, content in pages.items():
+# ----------------------------------------------------------------- commerce
+def build_cart():
+    c = COMMERCE["cartPage"]
+    trust = "".join(f"<li>{esc(x)}</li>" for x in c["trust"])
+    body = f"""
+<section class="section"><div class="wrap">
+  <p class="eyebrow">{esc(c['eyebrow'])}</p>
+  <h1 class="h1">{esc(c['title'])}</h1>
+  <p class="lede" style="margin:12px 0 34px">{esc(c['sub'])}</p>
+  <div class="cart-grid">
+    <div>
+      <div class="cart-head"><span>{esc(c['item'])}</span><span>{esc(c['qty'])}</span><span>{esc(c['price'])}</span></div>
+      <div id="cartLines"></div>
+      <p class="cart-empty" id="cartEmpty" hidden>{esc(c['empty'])}
+        <a class="link-u" href="shop.html">{esc(c['emptyCta'])} →</a></p>
+    </div>
+    <aside class="cart-aside">
+      <h2 class="h3" style="margin-bottom:16px">{esc(c['summary'])}</h2>
+      <div class="cart-row"><span>{esc(c['subtotal'])}</span><span id="sumSubtotal">$0</span></div>
+      <div class="cart-row"><span>{esc(c['shipping'])}</span><span id="sumShipping">—</span></div>
+      <div class="cart-row total"><span>{esc(c['total'])}</span><b id="sumTotal">$0</b></div>
+      <p class="small" style="margin:10px 0 16px">{esc(c['taxNote'])}</p>
+      <a class="btn btn--full" href="checkout.html"><span>{esc(c['checkout'])}</span></a>
+      <p class="small" style="margin-top:12px">{esc(c['shipNote'])}</p>
+      <ul class="cart-trust">{trust}</ul>
+    </aside>
+  </div>
+  <p style="margin-top:34px"><a class="link-u" href="shop.html">← {esc(c['continue'])}</a></p>
+</div></section>"""
+    return page_ld(f"{c['title']} — {BRAND}", c['sub'], "cart.html", body, "",
+                   '<meta name="robots" content="noindex">')
+
+
+def build_checkout():
+    c = COMMERCE["checkout"]
+    body = f"""
+<section class="section"><div class="wrap">
+  <p class="eyebrow">{esc(c['eyebrow'])} <span class="badge-soft">{esc(c['demoBadge'])}</span></p>
+  <h1 class="h1">{esc(c['title'])}</h1>
+  <p class="lede" style="margin:12px 0 32px">{esc(c['payNote'])}</p>
+  <form class="checkout-grid" id="checkoutForm" novalidate>
+    <div>
+      <h2 class="h3">{esc(c['contact'])}</h2>
+      <div class="form" style="margin:14px 0 30px">
+        <div class="field"><label>{esc(c['email'])}</label><input type="email" name="email" required></div>
+      </div>
+      <h2 class="h3">{esc(c['shippingHead'])}</h2>
+      <div class="form" style="margin-top:14px">
+        <div class="field"><label>{esc(c['name'])}</label><input name="name" required></div>
+        <div class="field"><label>{esc(c['address'])}</label><input name="address" required></div>
+        <div class="form__row">
+          <div class="field"><label>{esc(c['city'])}</label><input name="city" required></div>
+          <div class="field"><label>{esc(c['zip'])}</label><input name="zip" required></div>
+        </div>
+        <div class="form__row">
+          <div class="field"><label>{esc(c['country'])}</label>
+            <select name="country"><option>United States</option><option>Canada</option>
+              <option>United Kingdom</option><option>Germany</option><option>France</option>
+              <option>Netherlands</option><option>Australia</option><option>Japan</option></select></div>
+          <div class="field"><label>{esc(c['phone'])}</label><input name="phone"></div>
+        </div>
+        <div class="field"><label>{esc(c['method'])}</label>
+          <select name="method"><option>{esc(c['standard'])}</option><option>{esc(c['express'])}</option></select></div>
+      </div>
+      <h2 class="h3" style="margin-top:30px">{esc(c['paymentHead'])}</h2>
+      <p class="small" style="margin-top:8px">{esc(c['payNote'])}</p>
+      <p style="margin-top:22px"><a class="link-u" href="cart.html">← {esc(c['back'])}</a></p>
+    </div>
+    <aside class="cart-aside">
+      <h2 class="h3" style="margin-bottom:16px">{esc(c['summary'])}</h2>
+      <div id="checkoutLines"></div>
+      <div class="cart-row"><span>{esc(COMMERCE['cartPage']['subtotal'])}</span><span id="coSubtotal">$0</span></div>
+      <div class="cart-row"><span>{esc(COMMERCE['cartPage']['shipping'])}</span><span id="coShipping">—</span></div>
+      <div class="cart-row total"><span>{esc(COMMERCE['cartPage']['total'])}</span><b id="coTotal">$0</b></div>
+      <button class="btn btn--full" type="submit" style="margin-top:16px"><span>{esc(c['placeOrder'])}</span></button>
+      <p class="small" style="margin-top:12px">{esc(c['payNote'])}</p>
+    </aside>
+  </form>
+</div></section>"""
+    return page_ld(f"{c['title']} — {BRAND}", c['payNote'], "checkout.html", body, "",
+                   '<meta name="robots" content="noindex">')
+
+
+def build_success():
+    c = COMMERCE["success"]
+    steps = "".join(f"<li>{esc(x)}</li>" for x in c["steps"])
+    body = f"""
+<section class="section"><div class="wrap" style="max-width:760px">
+  <p class="eyebrow">{esc(c['eyebrow'])}</p>
+  <h1 class="h1">{esc(c['title'])}</h1>
+  <p class="lede" style="margin:14px 0 26px">{esc(c['sub'])}</p>
+  <div class="order-box">
+    <span class="small">{esc(c['orderLabel'])}</span>
+    <strong id="orderNo">—</strong>
+    <span class="small" id="orderEmail"></span>
+  </div>
+  <p class="small" style="margin:14px 0 30px">{esc(c['emailNote'])}</p>
+  <h2 class="h3">{esc(c['next'])}</h2>
+  <ol class="order-steps">{steps}</ol>
+  <a class="btn" href="shop.html" style="margin-top:26px"><span>{esc(c['cta'])}</span></a>
+</div></section>"""
+    return page_ld(f"{c['title']} — {BRAND}", c['sub'], "success.html", body, "",
+                   '<meta name="robots" content="noindex">')
+
+
+
+def main():
+    global IS_ZH, BASE, CURRENT
+    out = HERE
+    zh_dir = HERE / "zh"
+
+    made = {}
+
+    def render_all():
+        pages = {
+            "index.html": build_home(),
+            "shop.html": build_shop(),
+            "about.html": build_about(),
+            "technology.html": build_technology(),
+            "journal.html": build_journal(),
+            "faq.html": build_faq(),
+            "contact.html": build_contact(),
+            "wholesale.html": build_wholesale(),
+            "404.html": build_404(),
+            "cart.html": build_cart(),
+            "checkout.html": build_checkout(),
+            "success.html": build_success(),
+        }
+        for i, a in enumerate(JOURNAL["articles"]):
+            pages[f"journal-{i+1}.html"] = build_article(i, a)
+        for slug in ("shipping", "returns", "warranty", "privacy", "terms"):
+            pages[f"{slug}.html"] = build_legal(f"{slug}.html", LEGAL[slug])
+        for pr in PRODUCTS:
+            pages[f"p-{pr['id']}.html"] = build_product(pr)
+        return pages
+
+    # --- English pass ---
+    set_lang("en"); IS_ZH = False; BASE = ""
+    en_pages = render_all()
+    for name, content in en_pages.items():
         (out / name).write_text(content, encoding="utf-8")
 
+    # --- Chinese pass (same renderers, Chinese data, written under /zh/) ---
+    set_lang("zh"); IS_ZH = True; BASE = "../"
+    zh_dir.mkdir(exist_ok=True)
+    zh_pages = render_all()
+    for name, content in zh_pages.items():
+        # only asset URLs need lifting one level; page links stay relative
+        content = content.replace('src="assets/', 'src="../assets/')
+        content = content.replace('href="assets/', 'href="../assets/')
+        (zh_dir / name).write_text(content, encoding="utf-8")
+
+    # --- sitemap with both languages ---
     today = "2026-11-22"
-    urls = [("index.html", "1.0"), ("shop.html", "0.9")]
-    urls += [(f"p-{p['id']}.html", "0.8") for p in PRODUCTS]
-    urls += [("about.html", "0.6"), ("technology.html", "0.6"), ("journal.html", "0.6"),
-             ("journal-1.html", "0.5"), ("journal-2.html", "0.5"), ("journal-3.html", "0.5"),
-             ("faq.html", "0.6"), ("contact.html", "0.5"), ("wholesale.html", "0.4"),
-             ("shipping.html", "0.4"), ("returns.html", "0.4"), ("warranty.html", "0.4"),
-             ("privacy.html", "0.2"), ("terms.html", "0.2")]
-    sitemap = ['<?xml version="1.0" encoding="UTF-8"?>',
-               '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
-    for path, pri in urls:
-        loc = DOMAIN + "/" + ("" if path == "index.html" else path)
-        sitemap.append(f"  <url><loc>{loc}</loc><lastmod>{today}</lastmod>"
-                       f"<priority>{pri}</priority></url>")
-    sitemap.append("</urlset>")
-    (out / "sitemap.xml").write_text("\n".join(sitemap), encoding="utf-8")
+    tier = {"index.html": "1.0", "shop.html": "0.9"}
+    urls = []
+    for name in en_pages:
+        if name in ("404.html", "cart.html", "checkout.html", "success.html"):
+            continue
+        pri = tier.get(name, "0.8" if name.startswith("p-") else "0.6")
+        urls.append((name, pri))
+    lines = ['<?xml version="1.0" encoding="UTF-8"?>',
+             '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" '
+             'xmlns:xhtml="http://www.w3.org/1999/xhtml">']
+    for name, pri in urls:
+        en_url = DOMAIN + "/" + ("" if name == "index.html" else name)
+        zh_url = DOMAIN + "/zh/" + ("" if name == "index.html" else name)
+        alt = (f'<xhtml:link rel="alternate" hreflang="en" href="{en_url}"/>'
+               f'<xhtml:link rel="alternate" hreflang="zh-Hans" href="{zh_url}"/>')
+        lines.append(f"  <url><loc>{en_url}</loc>{alt}<lastmod>{today}</lastmod><priority>{pri}</priority></url>")
+        lines.append(f"  <url><loc>{zh_url}</loc>{alt}<lastmod>{today}</lastmod><priority>{pri}</priority></url>")
+    lines.append("</urlset>")
+    (out / "sitemap.xml").write_text("\n".join(lines), encoding="utf-8")
     (out / "robots.txt").write_text(
         "User-agent: *\nAllow: /\n\nSitemap: " + DOMAIN + "/sitemap.xml\n", encoding="utf-8")
-    print(f"wrote sitemap.xml ({len(urls)} urls) and robots.txt")
-    print(f"wrote {len(pages)} pages")
+
+    total = len(en_pages) + len(zh_pages)
+    print(f"wrote {len(en_pages)} EN pages + {len(zh_pages)} ZH pages = {total}")
+    print(f"wrote sitemap.xml ({len(urls) * 2} urls, hreflang) and robots.txt")
     for old in ("product.html", "products.html"):
         if (out / old).exists():
             (out / old).unlink()

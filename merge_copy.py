@@ -76,6 +76,7 @@ def deep_merge(base, extra):
 
 def main():
     site, journal, legal = load("site"), load("journal"), load("legal")
+    commerce = load("commerce") or {}
     if not site:
         sys.exit("site.json missing")
     problems = []
@@ -111,6 +112,10 @@ def main():
             for page in ("shipping", "returns", "warranty", "privacy", "terms", "wholesale"):
                 if page in legal.get(lang, {}):
                     block[page] = legal[lang][page]
+        if commerce and lang in commerce:
+            for k in ("cartPage", "checkout", "success", "consent"):
+                if k in commerce[lang]:
+                    block[k] = commerce[lang][k]
         deep_merge(block, UI_EXTRAS[lang])
         out[lang] = block
 

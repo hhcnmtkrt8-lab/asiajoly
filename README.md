@@ -12,9 +12,12 @@ lines, bilingual (EN / 中文), no build step, no frameworks, no external reques
 
 | | |
 |---|---|
-| Pages | **30** — home, shop, 13 product pages, about, technology, journal index + 3 articles, FAQ, contact, wholesale, 5 policy pages, 404 |
+| Pages | **66** — 33 English + 33 Chinese (home, shop, 13 products, about, technology, journal + 3 articles, FAQ, contact, wholesale, cart, checkout, order confirmation, 5 policies, 404) |
 | Products | **13 SKUs** in four lines — Spring (fountains), Feast (feeders), Still (bowls & mats), Play (toys) — plus Care (filters, pumps) |
-| Language | English server-rendered; Chinese switches instantly at runtime from `assets/copy.js` |
+| Language | Two real static trees: `/` (English) and `/zh/` (Chinese), each server-rendered, linked with `hreflang` and a language switch. No JS needed to read either |
+| Commerce | Bag → cart page → checkout → order confirmation. Preview mode charges nothing; drop Stripe Payment Links into `assets/config.js` to take real payments |
+| Social | 29 generated 1200×630 OG cards, `twitter:card`, per-page titles/descriptions |
+| Privacy | Cookie consent banner gating GA4 / Plausible; analytics is off until accepted |
 | Weight | ~70 KB HTML per page, 24 KB CSS, 26 KB JS, product art as SVG (no photography, no CDN, no web fonts) |
 | Commerce | Client-side bag with localStorage, quantity, free-shipping threshold. No payment integration |
 | Motion | Scroll reveals, marquee, hover states — all disabled under `prefers-reduced-motion` |
@@ -63,8 +66,9 @@ All copy and art are generated. The pipeline is committed so the site can be reb
 ```bash
 python3 build_art.py        # 13 products × 3 views of SVG art → assets/products/
 python3 build_products.py   # .build/products.json → assets/products.js
-python3 merge_copy.py       # .build/{site,journal,legal}.json → assets/copy.js
-python3 build_site.py       # renders all 30 pages into the repo root
+python3 merge_copy.py       # .build/{site,journal,legal,commerce}.json → assets/copy.js
+python3 build_og.py         # 29 social cards (headless Chrome) → assets/og/
+python3 build_site.py       # renders 33 EN pages + 33 ZH pages, sitemap, robots
 ```
 
 Copy is written by Claude (`claude-opus-4-5`) against the briefs in `copy/`:
@@ -81,6 +85,35 @@ cat copy/brief.md copy/spec-legal.md    | claude -p --model claude-opus-4-5 > .b
 certifications, awards, press, review counts, no health claims, no fake urgency, honest toy
 durability, real product facts only.
 
+## Commerce, in two modes
+
+**Preview (default).** Cart, checkout and confirmation are fully working on the client, but no card
+is charged and the page says so. Orders get a number and land in `sessionStorage`.
+
+**Real payments.** Create one Stripe Payment Link per product (Dashboard → Payment links → New — no
+server needed) and paste the URLs into `assets/config.js`:
+
+```js
+window.AJ_CONFIG = {
+  stripe: { links: { "spring-01": "https://buy.stripe.com/xxxx", "feast-01": "https://buy.stripe.com/yyyy" } },
+};
+```
+
+Anything with a link gets a direct Stripe button; products without one stay in preview mode. For a
+single combined cart checkout you need a server endpoint (Stripe Checkout Sessions) — Payment Links
+are the no-backend compromise.
+
+## Analytics & consent
+
+`assets/config.js` also holds the analytics IDs:
+
+```js
+analytics: { ga4: "G-XXXXXXXXXX", plausibleDomain: "asiajoly.com" }
+```
+
+Nothing loads until the visitor accepts the cookie banner (Accept / Essential only). The choice is
+stored in `localStorage` and can be changed from **Cookie settings** in the footer.
+
 ## Structure
 
 ```
@@ -90,7 +123,9 @@ asiajoly-site/
 │   ├── styles.css             bright design system
 │   ├── app.js                 i18n, catalogue rendering, filters, bag, PDP
 │   ├── copy.js                GENERATED — all copy, EN + ZH
+│   ├── config.js              Stripe links + analytics IDs (edit this)
 │   ├── products.js            GENERATED — the 13-product catalogue
+│   ├── og/*.png               GENERATED — 29 social cards
 │   └── products/*.svg         39 files: 13 products × 3 views
 ├── data/products.json         catalogue source
 ├── copy/                      brand brief + three copy specs
