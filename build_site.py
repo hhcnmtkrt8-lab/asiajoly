@@ -485,7 +485,7 @@ def build_shop():
   <div class="grid grid--4" id="shopGrid" data-grid="all" data-pids="{all_ids}">{cards}</div>
   <p class="small" id="emptyNote" style="display:none;padding:40px 0">No products in this filter.</p>
 </div></section>"""
-    return page(f"Shop — {BRAND}", s["sub"], "shop.html", body, "shop")
+    return page(f"{s['title']} — {BRAND}" if IS_ZH else f"Shop — {BRAND}", s["sub"], "shop.html", body, "shop")
 
 
 def build_product(p):
@@ -621,7 +621,7 @@ def build_journal():
   <p class="lede" style="margin-top:18px">{esc(j['sub'])}</p>
 </div></section>
 <section class="section"><div class="wrap"><div class="journal-grid">{cards}</div></div></section>"""
-    return page(f"Journal — {BRAND}", j["sub"], "journal.html", body, "journal")
+    return page(f"{j['title']} — {BRAND}" if IS_ZH else f"Journal — {BRAND}", j["sub"], "journal.html", body, "journal")
 
 
 def build_article(i, a):
@@ -666,7 +666,7 @@ def build_faq():
   <div class="acc">{items}</div>
   <p style="margin-top:26px" class="small">Still stuck? <a class="link-u" href="contact.html">Write to us</a></p>
 </div></section>"""
-    return page(f"FAQ — {BRAND}", f["sub"], "faq.html", body, "faq")
+    return page(f"{f['title']} — {BRAND}" if IS_ZH else f"FAQ — {BRAND}", f["sub"], "faq.html", body, "faq")
 
 
 def build_contact():
@@ -695,7 +695,7 @@ def build_contact():
     <p class="small">{esc(c['form']['note'])}</p>
   </form>
 </div></section>"""
-    return page(f"Contact — {BRAND}", c["sub"], "contact.html", body, "")
+    return page(f"{c['title']} — {BRAND}" if IS_ZH else f"Contact — {BRAND}", c["sub"], "contact.html", body, "")
 
 
 def build_legal(slug, data, active=""):
@@ -740,7 +740,7 @@ def build_wholesale():
     <button class="btn" type="submit"><span>{esc(f['send'])}</span></button>
   </form>
 </div></section>"""
-    return page(f"Wholesale — {BRAND}", w["intro"], "wholesale.html", body, "")
+    return page(f"{w['title']} — {BRAND}" if IS_ZH else f"Wholesale — {BRAND}", w["intro"], "wholesale.html", body, "")
 
 
 def build_404():
@@ -752,7 +752,7 @@ def build_404():
   <p class="lede" style="margin:16px auto 26px">{esc(n['sub'])}</p>
   <a class="btn" href="shop.html"><span>{esc(n['cta'])}</span></a>
 </div></section>"""
-    return page(f"Not found — {BRAND}", n["sub"], "404.html", body)
+    return page(f"{n['title']} — {BRAND}" if IS_ZH else f"Not found — {BRAND}", n["sub"], "404.html", body)
 
 
 
