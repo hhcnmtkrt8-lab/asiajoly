@@ -1,15 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="170 300 280 240" width="620" height="760" role="img" aria-label="Asiajoly feeder"><defs>
   <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
-    <stop offset="0" stop-color="#fcfaf8"/>
-    <stop offset=".22" stop-color="#f6f2ea"/>
+    <stop offset="0" stop-color="#f4efe7"/>
+    <stop offset=".22" stop-color="#f4efe6"/>
     <stop offset=".55" stop-color="#e4d6bf"/>
     <stop offset=".82" stop-color="#d3bb92"/>
     <stop offset="1" stop-color="#be9756"/>
   </linearGradient>
   <linearGradient id="v" x1="0" y1="0" x2="1" y2="0">
     <stop offset="0" stop-color="#be9756" stop-opacity=".55"/>
-    <stop offset=".22" stop-color="#fcfaf8" stop-opacity=".55"/>
-    <stop offset=".55" stop-color="#fcfaf8" stop-opacity=".05"/>
+    <stop offset=".22" stop-color="#f4efe7" stop-opacity=".55"/>
+    <stop offset=".55" stop-color="#f4efe7" stop-opacity=".05"/>
     <stop offset="1" stop-color="#be9756" stop-opacity=".5"/>
   </linearGradient>
   <linearGradient id="w" x1="0" y1="0" x2="0" y2="1">
@@ -22,11 +22,12 @@
 <ellipse cx="310" cy="706" rx="129.0" ry="22" fill="#14201f" opacity=".16" filter="url(#soft)"/>
 <rect x="168.1" y="363.2" width="283.8" height="326.8" rx="29.24" fill="url(#g)"/>
 <rect x="168.1" y="363.2" width="283.8" height="326.8" rx="29.24" fill="url(#v)" opacity=".55"/>
-<rect x="176.1" y="349.2" width="267.8" height="30" rx="15" fill="#f6f2ea"/>
-<rect x="176.1" y="353.2" width="267.8" height="18" rx="9" fill="#e4d6bf" opacity=".55"/>
+<rect x="172.1" y="343.2" width="275.8" height="34" rx="17" fill="#14201f" opacity=".07" filter="url(#s2)"/>
+<rect x="176.1" y="347.2" width="267.8" height="32" rx="16" fill="#f4efe6" stroke="#d3bb92" stroke-width="1.4"/>
+<rect x="176.1" y="351.2" width="267.8" height="20" rx="10" fill="#e4d6bf" opacity=".5"/>
 <rect x="194.1" y="491.2" width="231.8" height="136.8" rx="18.919999999999998" fill="#957238" opacity=".2"/>
 <rect x="246.36" y="540.0" width="127.28" height="82.56" rx="25.8" fill="#be9756" opacity=".5"/>
-<ellipse cx="310" cy="597.12" rx="55.04" ry="22.36" fill="#f6f2ea"/>
+<ellipse cx="310" cy="597.12" rx="55.04" ry="22.36" fill="#f4efe6"/>
 <ellipse cx="310" cy="593.6800000000001" rx="49.88" ry="18.919999999999998" fill="#957238" opacity=".35"/>
 
 <rect x="198.1" y="513.2" width="223.8" height="4" rx="2" fill="#957238" opacity=".18"/>

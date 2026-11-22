@@ -4,13 +4,13 @@
     <stop offset=".22" stop-color="#596563"/>
     <stop offset=".55" stop-color="#3b4644"/>
     <stop offset=".82" stop-color="#1e2524"/>
-    <stop offset="1" stop-color="#070908"/>
+    <stop offset="1" stop-color="#090b0b"/>
   </linearGradient>
   <linearGradient id="v" x1="0" y1="0" x2="1" y2="0">
-    <stop offset="0" stop-color="#070908" stop-opacity=".55"/>
+    <stop offset="0" stop-color="#090b0b" stop-opacity=".55"/>
     <stop offset=".22" stop-color="#788381" stop-opacity=".55"/>
     <stop offset=".55" stop-color="#788381" stop-opacity=".05"/>
-    <stop offset="1" stop-color="#070908" stop-opacity=".5"/>
+    <stop offset="1" stop-color="#090b0b" stop-opacity=".5"/>
   </linearGradient>
   <linearGradient id="w" x1="0" y1="0" x2="0" y2="1">
     <stop offset="0" stop-color="#dff2f6"/>
@@ -30,7 +30,7 @@
       fill="url(#v)" opacity=".85"/>
 <ellipse cx="310" cy="352" rx="212.0" ry="56" fill="#788381"/>
 <ellipse cx="310" cy="346" rx="212.0" ry="56" fill="url(#g)"/>
-<ellipse cx="310" cy="344" rx="190.0" ry="49" fill="#070908"/>
+<ellipse cx="310" cy="344" rx="190.0" ry="49" fill="#090b0b"/>
 <ellipse cx="310" cy="347" rx="188.0" ry="47" fill="url(#w)" opacity=".92"/>
 <ellipse cx="310" cy="341" rx="30" ry="9" fill="#14201f" opacity=".16"/>
 <path d="M286 342 C288 323 332 323 334 342 Z" fill="#788381" opacity=".38"/>
@@ -39,7 +39,7 @@
   <ellipse cx="310" cy="348" rx="34" ry="10"/>
   <ellipse cx="310" cy="352" rx="66" ry="18" opacity=".45"/>
 </g>
-<rect x="406.0" y="410" width="13" height="170" rx="6.5" fill="#070908" opacity=".45"/>
+<rect x="406.0" y="410" width="13" height="170" rx="6.5" fill="#090c0b" opacity=".45"/>
 <rect x="408.0" y="412" width="9" height="166" rx="4.5" fill="#0f2a2a" opacity=".28"/>
 <rect x="408.0" y="492" width="9" height="86" rx="4.5" fill="#8fc3d4" opacity=".75"/>
 <path d="M98.0 360 C98.0 330 192.0 302 310 302 C428.0 302 522.0 330 522.0 360

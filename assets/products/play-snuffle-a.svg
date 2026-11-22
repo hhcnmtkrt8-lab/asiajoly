@@ -1,15 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="150 350 320 230" width="620" height="760" role="img" aria-label="Asiajoly snuffle mat"><defs>
   <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
-    <stop offset="0" stop-color="#fcfaf8"/>
-    <stop offset=".22" stop-color="#f8f4ee"/>
+    <stop offset="0" stop-color="#f4efe6"/>
+    <stop offset=".22" stop-color="#f4efe6"/>
     <stop offset=".55" stop-color="#e6d9c2"/>
     <stop offset=".82" stop-color="#d6be95"/>
     <stop offset="1" stop-color="#c19b58"/>
   </linearGradient>
   <linearGradient id="v" x1="0" y1="0" x2="1" y2="0">
     <stop offset="0" stop-color="#c19b58" stop-opacity=".55"/>
-    <stop offset=".22" stop-color="#fcfaf8" stop-opacity=".55"/>
-    <stop offset=".55" stop-color="#fcfaf8" stop-opacity=".05"/>
+    <stop offset=".22" stop-color="#f4efe6" stop-opacity=".55"/>
+    <stop offset=".55" stop-color="#f4efe6" stop-opacity=".05"/>
     <stop offset="1" stop-color="#c19b58" stop-opacity=".5"/>
   </linearGradient>
   <linearGradient id="w" x1="0" y1="0" x2="0" y2="1">
@@ -27,7 +27,7 @@
   <path d="M276 400 C308 448 272 486 308 516"/><path d="M332 396 C364 444 328 482 364 512"/>
   <path d="M388 400 C420 448 384 486 420 516"/><path d="M444 404 C470 444 440 478 468 508"/>
 </g>
-<g stroke="#fcfaf8" stroke-width="3" stroke-linecap="round" opacity=".7" fill="none">
+<g stroke="#f4efe6" stroke-width="3" stroke-linecap="round" opacity=".7" fill="none">
   <path d="M170 404 C202 452 166 490 202 520"/><path d="M282 404 C314 452 278 490 314 520"/>
   <path d="M394 404 C426 452 390 490 426 520"/>
 </g>

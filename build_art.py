@@ -46,7 +46,7 @@ def tone(base, dl=0.0, ds=0.0, dh=0.0):
     r, g, b = hex_to_rgb(base)
     h, l, s = colorsys.rgb_to_hls(r, g, b)
     h = (h + dh) % 1.0
-    l = max(0.03, min(0.98, l + dl))
+    l = max(0.04, min(0.93, l + dl))
     s = max(0.0, min(1.0, s + ds))
     return rgb_to_hex(*colorsys.hls_to_rgb(h, l, s))
 
@@ -168,8 +168,9 @@ def feeder(p, small=False, camera=False):
 {SHADOW.format(y=706, rx=150 * s, ry=22)}
 <rect x="{x}" y="{y}" width="{w}" height="{h}" rx="{34 * s}" fill="url(#g)"/>
 <rect x="{x}" y="{y}" width="{w}" height="{h}" rx="{34 * s}" fill="url(#v)" opacity=".55"/>
-<rect x="{x + 8}" y="{y - 14}" width="{w - 16}" height="{30}" rx="15" fill="{t['light']}"/>
-<rect x="{x + 8}" y="{y - 10}" width="{w - 16}" height="{18}" rx="9" fill="{t['mid']}" opacity=".55"/>
+<rect x="{x + 4}" y="{y - 20}" width="{w - 8}" height="{34}" rx="17" fill="#14201f" opacity=".07" filter="url(#s2)"/>
+<rect x="{x + 8}" y="{y - 16}" width="{w - 16}" height="32" rx="16" fill="{t['light']}" stroke="{t['low']}" stroke-width="1.4"/>
+<rect x="{x + 8}" y="{y - 12}" width="{w - 16}" height="20" rx="10" fill="{t['mid']}" opacity=".5"/>
 <rect x="{x + 26}" y="{y + 128}" width="{w - 52}" height="{h - 190}" rx="{22 * s}" fill="{t['deep']}" opacity=".2"/>
 <rect x="{310 - 74 * s}" y="{y + h - 150}" width="{148 * s}" height="{96 * s}" rx="{30 * s}" fill="{t['dark']}" opacity=".5"/>
 <ellipse cx="310" cy="{y + h - 108 * s}" rx="{64 * s}" ry="{26 * s}" fill="{t['light']}"/>
@@ -299,7 +300,7 @@ DETAIL = {
 VB = {
     "fountain": "70 268 480 480",
     "fountain-ceramic": "80 290 460 440",
-    "feeder": "138 288 344 404",
+    "feeder": "132 262 356 430",
     "bowl": "128 306 364 336",
     "mat": "72 348 476 264",
     "snuffle": "88 330 444 256",

@@ -4,13 +4,13 @@
     <stop offset=".22" stop-color="#596563"/>
     <stop offset=".55" stop-color="#3b4644"/>
     <stop offset=".82" stop-color="#1e2524"/>
-    <stop offset="1" stop-color="#070908"/>
+    <stop offset="1" stop-color="#090b0b"/>
   </linearGradient>
   <linearGradient id="v" x1="0" y1="0" x2="1" y2="0">
-    <stop offset="0" stop-color="#070908" stop-opacity=".55"/>
+    <stop offset="0" stop-color="#090b0b" stop-opacity=".55"/>
     <stop offset=".22" stop-color="#788381" stop-opacity=".55"/>
     <stop offset=".55" stop-color="#788381" stop-opacity=".05"/>
-    <stop offset="1" stop-color="#070908" stop-opacity=".5"/>
+    <stop offset="1" stop-color="#090b0b" stop-opacity=".5"/>
   </linearGradient>
   <linearGradient id="w" x1="0" y1="0" x2="0" y2="1">
     <stop offset="0" stop-color="#dff2f6"/>
@@ -22,18 +22,19 @@
 <ellipse cx="310" cy="706" rx="150.0" ry="22" fill="#14201f" opacity=".16" filter="url(#soft)"/>
 <rect x="145.0" y="310.0" width="330.0" height="380.0" rx="34.0" fill="url(#g)"/>
 <rect x="145.0" y="310.0" width="330.0" height="380.0" rx="34.0" fill="url(#v)" opacity=".55"/>
-<rect x="153.0" y="296.0" width="314.0" height="30" rx="15" fill="#596563"/>
-<rect x="153.0" y="300.0" width="314.0" height="18" rx="9" fill="#3b4644" opacity=".55"/>
-<rect x="171.0" y="438.0" width="278.0" height="190.0" rx="22.0" fill="#070908" opacity=".2"/>
-<rect x="236.0" y="540.0" width="148.0" height="96.0" rx="30.0" fill="#070908" opacity=".5"/>
+<rect x="149.0" y="290.0" width="322.0" height="34" rx="17" fill="#14201f" opacity=".07" filter="url(#s2)"/>
+<rect x="153.0" y="294.0" width="314.0" height="32" rx="16" fill="#596563" stroke="#1e2524" stroke-width="1.4"/>
+<rect x="153.0" y="298.0" width="314.0" height="20" rx="10" fill="#3b4644" opacity=".5"/>
+<rect x="171.0" y="438.0" width="278.0" height="190.0" rx="22.0" fill="#090c0b" opacity=".2"/>
+<rect x="236.0" y="540.0" width="148.0" height="96.0" rx="30.0" fill="#090b0b" opacity=".5"/>
 <ellipse cx="310" cy="582.0" rx="64.0" ry="26.0" fill="#596563"/>
-<ellipse cx="310" cy="578.0" rx="58.0" ry="22.0" fill="#070908" opacity=".35"/>
+<ellipse cx="310" cy="578.0" rx="58.0" ry="22.0" fill="#090c0b" opacity=".35"/>
 
 <rect x="264" y="364.0" width="92" height="62" rx="14" fill="#1b2b2b"/>
 <circle cx="310" cy="395.0" r="20" fill="#0d1a1a"/>
 <circle cx="310" cy="395.0" r="11" fill="#2a5b6b"/>
 <circle cx="315" cy="390.0" r="3.5" fill="#cfeef7" opacity=".9"/>
-<rect x="175.0" y="460.0" width="270.0" height="4" rx="2" fill="#070908" opacity=".18"/>
+<rect x="175.0" y="460.0" width="270.0" height="4" rx="2" fill="#090c0b" opacity=".18"/>
 <circle cx="406.0" cy="510.0" r="7" fill="#12736b" opacity=".9"/>
 <circle cx="406.0" cy="510.0" r="12" fill="#12736b" opacity=".18"/>
 <path d="M169.0 340.0 C169.0 328.0 185.0 324.0 199.0 324.0 L205.0 650.0 C189.0 646.0 175.0 636.0 173.0 622.0 Z" fill="#fff" opacity=".32" filter="url(#s2)"/>

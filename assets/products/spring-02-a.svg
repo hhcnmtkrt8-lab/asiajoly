@@ -1,15 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="180 310 260 260" width="620" height="760" role="img" aria-label="Asiajoly ceramic fountain"><defs>
   <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
-    <stop offset="0" stop-color="#fcfaf8"/>
-    <stop offset=".22" stop-color="#fcfaf8"/>
+    <stop offset="0" stop-color="#f4efe7"/>
+    <stop offset=".22" stop-color="#f4efe6"/>
     <stop offset=".55" stop-color="#efe7da"/>
     <stop offset=".82" stop-color="#deccae"/>
     <stop offset="1" stop-color="#c8a772"/>
   </linearGradient>
   <linearGradient id="v" x1="0" y1="0" x2="1" y2="0">
     <stop offset="0" stop-color="#c8a772" stop-opacity=".55"/>
-    <stop offset=".22" stop-color="#fcfaf8" stop-opacity=".55"/>
-    <stop offset=".55" stop-color="#fcfaf8" stop-opacity=".05"/>
+    <stop offset=".22" stop-color="#f4efe7" stop-opacity=".55"/>
+    <stop offset=".55" stop-color="#f4efe7" stop-opacity=".05"/>
     <stop offset="1" stop-color="#c8a772" stop-opacity=".5"/>
   </linearGradient>
   <linearGradient id="w" x1="0" y1="0" x2="0" y2="1">
@@ -24,7 +24,7 @@
          L500 636 C498 672 414 692 310 692 C206 692 122 672 120 636 Z" fill="url(#g)"/>
 <path d="M104 372 C104 340 200 312 310 312 C420 312 516 340 516 372
          L500 636 C498 672 414 692 310 692 C206 692 122 672 120 636 Z" fill="url(#v)" opacity=".7"/>
-<ellipse cx="310" cy="364" rx="212" ry="56" fill="#fcfaf8"/>
+<ellipse cx="310" cy="364" rx="212" ry="56" fill="#f4efe7"/>
 <ellipse cx="310" cy="358" rx="212" ry="56" fill="url(#g)"/>
 <ellipse cx="310" cy="358" rx="188" ry="48" fill="#c8a772" opacity=".9"/>
 <ellipse cx="310" cy="361" rx="186" ry="46" fill="url(#w)" opacity=".9"/>

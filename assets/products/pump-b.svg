@@ -1,15 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="220 380 180 200" width="620" height="760" role="img" aria-label="Asiajoly pump"><defs>
   <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
-    <stop offset="0" stop-color="#fafafa"/>
-    <stop offset=".22" stop-color="#f1f2f3"/>
+    <stop offset="0" stop-color="#eceeee"/>
+    <stop offset=".22" stop-color="#eceeef"/>
     <stop offset=".55" stop-color="#cfd5d8"/>
     <stop offset=".82" stop-color="#acb8be"/>
     <stop offset="1" stop-color="#7c929d"/>
   </linearGradient>
   <linearGradient id="v" x1="0" y1="0" x2="1" y2="0">
     <stop offset="0" stop-color="#7c929d" stop-opacity=".55"/>
-    <stop offset=".22" stop-color="#fafafa" stop-opacity=".55"/>
-    <stop offset=".55" stop-color="#fafafa" stop-opacity=".05"/>
+    <stop offset=".22" stop-color="#eceeee" stop-opacity=".55"/>
+    <stop offset=".55" stop-color="#eceeee" stop-opacity=".05"/>
     <stop offset="1" stop-color="#7c929d" stop-opacity=".5"/>
   </linearGradient>
   <linearGradient id="w" x1="0" y1="0" x2="0" y2="1">
@@ -22,7 +22,7 @@
 <ellipse cx="310" cy="566" rx="84" ry="16" fill="#14201f" opacity=".16" filter="url(#soft)"/>
 <rect x="248" y="330" width="124" height="220" rx="26" fill="url(#g)"/>
 <rect x="248" y="330" width="124" height="220" rx="26" fill="url(#v)" opacity=".45"/>
-<ellipse cx="310" cy="340" rx="62" ry="17" fill="#fafafa"/>
+<ellipse cx="310" cy="340" rx="62" ry="17" fill="#eceeee"/>
 <ellipse cx="310" cy="344" rx="50" ry="13" fill="#586e78" opacity=".35"/>
 <g fill="#586e78" opacity=".3">
   <circle cx="288" cy="420" r="4"/><circle cx="310" cy="420" r="4"/><circle cx="332" cy="420" r="4"/>
