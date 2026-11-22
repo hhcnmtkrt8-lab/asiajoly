@@ -1,0 +1,41 @@
+# 可选：通过 FTP 把站点同步到 Hostinger。
+# 只在手动触发时运行，不会随 push 自动执行。
+# 需要三个仓库 secret：FTP_SERVER / FTP_USERNAME / FTP_PASSWORD
+name: Deploy to Hostinger (FTP)
+
+on:
+  workflow_dispatch:
+    inputs:
+      server_dir:
+        description: "Remote directory (default /public_html/)"
+        required: false
+        default: "/public_html/"
+
+concurrency:
+  group: ftp-deploy
+  cancel-in-progress: true
+
+jobs:
+  ftp:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Sync site to Hostinger over FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: ${{ github.event.inputs.server_dir }}
+          dangerous-clean-slate: false
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/.github/**
+            **/.build/**
+            **/*.py
+            **/copy/**
+            **/data/**
+            README.md
+            DEPLOY.md
+            .gitignore
