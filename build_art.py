@@ -346,9 +346,15 @@ def main():
     # pro variants reuse the base drawing with a darker finish
     _pro = fountain("#3b4644").replace('viewBox="0 0 620 760"', 'viewBox="%s"' % VB["fountain"])
     (OUT / "spring-01-pro.svg").write_text(_pro, encoding="utf-8")
+    for tag, box in zip("ab", DETAIL["fountain"]):
+        (OUT / f"spring-01-pro-{tag}.svg").write_text(
+            _pro.replace('viewBox="%s"' % VB["fountain"], 'viewBox="%s"' % box), encoding="utf-8")
     made.append("spring-01-pro")
     _pfeed = feeder("#3b4644", camera=True).replace('viewBox="0 0 620 760"', 'viewBox="%s"' % VB["feeder"])
     (OUT / "feast-01-pro.svg").write_text(_pfeed, encoding="utf-8")
+    for tag, box in zip("ab", DETAIL["feeder"]):
+        (OUT / f"feast-01-pro-{tag}.svg").write_text(
+            _pfeed.replace('viewBox="%s"' % VB["feeder"], 'viewBox="%s"' % box), encoding="utf-8")
     made.append("feast-01-pro")
     # hero: the flagship in the brightest finish
     _hero = fountain("#c9d0d3").replace('viewBox="0 0 620 760"', 'viewBox="%s"' % VB["fountain"])
