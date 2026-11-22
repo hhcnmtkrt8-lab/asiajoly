@@ -306,6 +306,17 @@
 
   /* ---------------- motion ---------------- */
   let revealObs;
+  // Anything already on screen is revealed immediately: the scroll animation is an
+  // enhancement, never a precondition for reading the page (and some renderers and
+  // preview services never fire IntersectionObserver).
+  function revealInView() {
+    const vh = window.innerHeight || 800;
+    $$("[data-reveal]:not(.is-in)").forEach(function (el) {
+      const r = el.getBoundingClientRect();
+      if (r.top < vh * 0.96 && r.bottom > 0) { el.classList.add("is-in"); el.classList.add("is-instant"); }
+    });
+  }
+
   function observeReveals() {
     if (revealObs) revealObs.disconnect();
     if (!("IntersectionObserver" in window)) {
@@ -318,6 +329,9 @@
       });
     }, { rootMargin: "0px 0px -6% 0px", threshold: 0.05 });
     $$("[data-reveal]").forEach(function (el) { revealObs.observe(el); });
+    requestAnimationFrame(revealInView);
+    setTimeout(revealInView, 400);
+    setTimeout(revealInView, 1500);
   }
 
   /* ---------------- misc ---------------- */
