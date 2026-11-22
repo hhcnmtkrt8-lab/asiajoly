@@ -1,0 +1,26 @@
+# Asiajoly — static site server config (Hostinger / Apache / LiteSpeed).
+# GitHub Pages ignores this file; it is here for the Hostinger deployment.
+
+# Serve index.html before index.php. Without this, a leftover default index.php
+# from the hosting placeholder will keep winning and show "Coming soon".
+DirectoryIndex index.html index.php
+
+# Pretty 404
+ErrorDocument 404 /404.html
+
+# No directory listing
+Options -Indexes
+
+# Compression
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css application/javascript image/svg+xml application/json
+</IfModule>
+
+# Cache: HTML revalidates, assets cache for a week
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/css "access plus 7 days"
+  ExpiresByType application/javascript "access plus 7 days"
+  ExpiresByType image/svg+xml "access plus 30 days"
+  ExpiresByType text/html "access plus 0 seconds"
+</IfModule>
