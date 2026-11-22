@@ -268,18 +268,10 @@ section { position: relative; }
   opacity: .5; pointer-events: none;
 }
 .hero__type { position: relative; z-index: 2; padding-block: 40px; }
-.hero__type .eyebrow { opacity: 0; animation: fadeUp 1s var(--ease) .25s forwards; }
 .hero h1 { margin: 0 0 26px; }
 .hero h1 .ln { text-wrap: balance; }
 .hero h1 .ln { display: block; overflow: hidden; }
-.hero h1 .ln span {
-  display: block;
-  transform: translateY(104%);
-  animation: lineUp 1.15s var(--ease) forwards;
-}
-.hero h1 .ln:nth-child(1) span { animation-delay: .35s; }
-.hero h1 .ln:nth-child(2) span { animation-delay: .47s; }
-.hero h1 .ln:nth-child(3) span { animation-delay: .59s; }
+.hero h1 .ln span { display: block; }
 .hero h1 em {
   font-style: normal;
   color: var(--glacier);
@@ -287,24 +279,19 @@ section { position: relative; }
 .hero__sub {
   max-width: 40ch; color: var(--fg-dim);
   font-size: clamp(15px, 1.1vw, 17px);
-  opacity: 0; animation: fadeUp 1s var(--ease) .8s forwards;
 }
 .hero__cta {
   display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px;
-  opacity: 0; animation: fadeUp 1s var(--ease) .95s forwards;
 }
 .hero__note {
   margin-top: 20px; font-family: var(--mono); font-size: 10.5px;
   letter-spacing: .16em; text-transform: uppercase; color: var(--fg-dim);
-  opacity: 0; animation: fadeUp 1s var(--ease) 1.1s forwards;
 }
 .hero__stage {
   position: relative;
   height: min(66vh, 620px);
   display: grid;
   place-items: center;
-  opacity: 0;
-  animation: stageIn 1.6s var(--ease) .5s forwards;
   will-change: transform;
 }
 .hero__stage img { width: min(76%, 440px); filter: drop-shadow(0 60px 70px rgba(0, 0, 0, .6)); }
@@ -330,7 +317,6 @@ section { position: relative; }
   display: flex; align-items: center; gap: 12px;
   font-family: var(--mono); font-size: 10px; letter-spacing: .22em;
   text-transform: uppercase; color: var(--fg-dim);
-  opacity: 0; animation: fadeUp 1s var(--ease) 1.4s forwards;
 }
 .scroll-cue i {
   display: block; width: 1px; height: 40px; background: currentColor;
@@ -568,11 +554,11 @@ section { position: relative; }
 .footer__badges span { padding: 4px 8px; border: 1px solid var(--line); border-radius: 2px; letter-spacing: .1em; }
 
 /* ---------- reveal ---------- */
-[data-reveal] { opacity: 0; transform: translateY(26px); transition: opacity .9s var(--ease), transform .9s var(--ease); transition-delay: var(--d, 0ms); }
-[data-reveal].is-in { opacity: 1; transform: none; }
-[data-reveal="fade"] { transform: none; }
-[data-reveal="clip"] { clip-path: inset(0 0 100% 0); transform: none; transition: clip-path 1.1s var(--ease), opacity .9s; }
-[data-reveal="clip"].is-in { clip-path: inset(0 0 0 0); }
+.js [data-reveal] { opacity: 0; transform: translateY(26px); transition: opacity .9s var(--ease), transform .9s var(--ease); transition-delay: var(--d, 0ms); }
+.js [data-reveal].is-in { opacity: 1; transform: none; }
+.js [data-reveal="fade"] { transform: none; }
+.js [data-reveal="clip"] { clip-path: inset(0 0 100% 0); transform: none; transition: clip-path 1.1s var(--ease), opacity .9s; }
+.js [data-reveal="clip"].is-in { clip-path: inset(0 0 0 0); }
 
 /* ---------- cart drawer ---------- */
 .overlay {
@@ -730,6 +716,30 @@ section { position: relative; }
   .feature-grid { grid-template-columns: 1fr; }
   .scroll-cue { display: none; }
 }
+
+/* Hero entrance — only where animation is welcome, so the copy is never invisible
+   to crawlers, link previews, or anyone with motion turned off. */
+@media (prefers-reduced-motion: no-preference) {
+  .hero__type .eyebrow { animation: fadeUp 1s var(--ease) .25s both; }
+  .hero h1 .ln span { transform: translateY(104%); animation: lineUp 1.15s var(--ease) both; }
+  .hero h1 .ln:nth-child(1) span { animation-delay: .35s; }
+  .hero h1 .ln:nth-child(2) span { animation-delay: .47s; }
+  .hero h1 .ln:nth-child(3) span { animation-delay: .59s; }
+  .hero__sub { animation: fadeUp 1s var(--ease) .8s both; }
+  .hero__cta { animation: fadeUp 1s var(--ease) .95s both; }
+  .hero__note { animation: fadeUp 1s var(--ease) 1.1s both; }
+  .hero__stage { animation: stageIn 1.6s var(--ease) .5s both; }
+  .scroll-cue { animation: fadeUp 1s var(--ease) 1.4s both; }
+}
+
+
+/* If the animation clock never advances (preview renderers, throttled tabs),
+   JS drops this class in after 2.6s and the hero snaps to its final state. */
+.anim-done .hero__type .eyebrow,
+.anim-done .hero__sub, .anim-done .hero__cta, .anim-done .hero__note,
+.anim-done .hero__stage, .anim-done .scroll-cue { animation: none !important; opacity: 1 !important; }
+.anim-done .hero h1 .ln span { animation: none !important; transform: none !important; }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
   html { scroll-behavior: auto; }

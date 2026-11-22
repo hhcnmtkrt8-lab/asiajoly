@@ -59,8 +59,8 @@ def walk():
 # An entirely empty repository rejects blob/tree calls with 409, so land one commit first.
 def bootstrap():
     try:
-        call("GET", f"/repos/{REPO}/git/ref/heads/{BRANCH}")
-        return None
+        ref = call("GET", f"/repos/{REPO}/git/ref/heads/{BRANCH}")
+        return ref["object"]["sha"]
     except Exception:
         pass
     content = base64.b64encode(b"# initial\n").decode()

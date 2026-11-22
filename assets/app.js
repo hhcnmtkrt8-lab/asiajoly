@@ -623,5 +623,7 @@
     });
   }
 
+  setTimeout(function () { document.documentElement.classList.add("anim-done"); }, 2600);
+
   document.addEventListener("DOMContentLoaded", boot);
 })();
