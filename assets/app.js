@@ -431,6 +431,13 @@
       if (empty) empty.hidden = true;
       lines.innerHTML = T.items.map(lineHtml).join("");
     }
+    const check = document.querySelector('.cart-aside .btn');
+    if (check) {
+      const off = !T.items.length;
+      check.style.opacity = off ? ".4" : "";
+      check.style.pointerEvents = off ? "none" : "";
+      check.setAttribute("aria-disabled", off ? "true" : "false");
+    }
     if ($("#sumSubtotal")) $("#sumSubtotal").textContent = money(T.sub);
     if ($("#sumShipping")) $("#sumShipping").textContent = T.sub === 0 ? "—" : (T.ship ? money(T.ship) : t("cart.free"));
     if ($("#sumTotal")) $("#sumTotal").textContent = money(T.total);
